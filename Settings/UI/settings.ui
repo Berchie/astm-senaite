@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>dg_settings</class>
+ <widget class="QDialog" name="dg_settings">
+  <property name="windowModality">
+   <enum>Qt::WindowModality::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>405</width>
+    <height>423</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Settings</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../Icons/Icons.qrc">
+    <normaloff>:/Main/port.png</normaloff>:/Main/port.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab_senaite_lims">
+      <attribute name="title">
+       <string>SENAITE LIMS</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0" colspan="2">
+        <layout class="QFormLayout" name="formLayout">
+         <property name="verticalSpacing">
+          <number>27</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="lb_server_name">
+           <property name="text">
+            <string>Server Name/IP Address:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="txt_sever_name_ip_address"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lb_port">
+           <property name="text">
+            <string>Senaite Port:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="txt_senaite_port"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="lb_seiteid">
+           <property name="text">
+            <string>Site ID:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="txt_site_id"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="lb_username">
+           <property name="text">
+            <string>Senaite Username:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="txt_senaite_username"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="lb_password">
+           <property name="text">
+            <string>Senaite Password:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="txt_senaite_password">
+           <property name="echoMode">
+            <enum>QLineEdit::EchoMode::Password</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>148</number>
+         </property>
+         <property name="bottomMargin">
+          <number>30</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="pb_test_lims">
+           <property name="text">
+            <string>Test LIMS</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDialogButtonBox" name="btnbx_reset_senaite_settings">
+           <property name="standardButtons">
+            <set>QDialogButtonBox::StandardButton::Reset</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_analyzer">
+      <attribute name="title">
+       <string>ANALYZER</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <layout class="QFormLayout" name="formLayout_2">
+         <property name="horizontalSpacing">
+          <number>21</number>
+         </property>
+         <property name="verticalSpacing">
+          <number>21</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="lb_analyzer_name">
+           <property name="text">
+            <string>Analyzer Name:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="cb_analyzer_name">
+           <property name="currentText">
+            <string>Select Analyzer</string>
+           </property>
+           <property name="sizeAdjustPolicy">
+            <enum>QComboBox::SizeAdjustPolicy::AdjustToContentsOnFirstShow</enum>
+           </property>
+           <property name="frame">
+            <bool>true</bool>
+           </property>
+           <item>
+            <property name="text">
+             <string>Select Analyzer</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>BD BACTEC FX40</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>COBAS C11</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>DRI-CHEM NX500</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>SYSMEX XN-350</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lb_com_port">
+           <property name="text">
+            <string>COM Port:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="cb_comport"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="lb_buadrate">
+           <property name="text">
+            <string>Baudrate:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="cb_buadrate">
+           <item>
+            <property name="text">
+             <string>50</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>75</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>110</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>134</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>150</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>200</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>300</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>600</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1200</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1800</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2400</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>4800</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>9600</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>19200</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>38400</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>57600</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>115200</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>230400</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>460800</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>921600</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="lb_bytesize">
+           <property name="text">
+            <string>Bytesize:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="cb_bytesize">
+           <item>
+            <property name="text">
+             <string>5</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>6</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>7</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>8</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="lb_parity">
+           <property name="text">
+            <string>Parity:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QComboBox" name="cb_parity">
+           <item>
+            <property name="text">
+             <string>None</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Even</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Odd</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Mark</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Space</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="lb_stopbits">
+           <property name="text">
+            <string>Stopbits:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QComboBox" name="cb_stopbits">
+           <item>
+            <property name="text">
+             <string>1</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1.5</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="lb_flow_control">
+           <property name="layoutDirection">
+            <enum>Qt::LayoutDirection::LeftToRight</enum>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Flow Control:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QComboBox" name="cb_flow_control">
+           <item>
+            <property name="text">
+             <string>Xon/Xoff</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Hardware</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>None</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QDialogButtonBox" name="btnbx_restore_analyzer_default_settings">
+         <property name="standardButtons">
+          <set>QDialogButtonBox::StandardButton::RestoreDefaults</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="btnbx_save_cancel">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Save</set>
+     </property>
+     <property name="centerButtons">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../Icons/Icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>

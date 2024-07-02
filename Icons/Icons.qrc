@@ -1,0 +1,15 @@
+<RCC>
+  <qresource prefix="Main">
+    <file>port.png</file>
+  </qresource>
+  <qresource prefix="Buttons">
+    <file>icons8-connected-94.png</file>
+    <file>icons8-disconnected-94.png</file>
+    <file>icons8-exit-94.png</file>
+    <file>icons8-settings-375.png</file>
+  </qresource>
+  <qresource prefix="Other">
+    <file>software-development.png</file>
+    <file>vga-port.png</file>
+  </qresource>
+</RCC>
