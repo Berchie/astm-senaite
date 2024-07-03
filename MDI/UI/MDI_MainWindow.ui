@@ -44,36 +44,15 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuConnection">
-    <property name="title">
-     <string>Control</string>
-    </property>
-    <addaction name="actionStart_Listen"/>
-    <addaction name="actionStop_Listen"/>
-    <addaction name="separator"/>
-    <addaction name="actionSettings"/>
-   </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
      <string>Window</string>
     </property>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuConnection"/>
    <addaction name="menuWindow"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="mdi_tool_bar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
   <action name="actionNew">
    <property name="text">
     <string>New</string>
