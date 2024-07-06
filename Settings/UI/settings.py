@@ -26,7 +26,7 @@ class Ui_dg_settings(object):
         if not dg_settings.objectName():
             dg_settings.setObjectName(u"dg_settings")
         dg_settings.setWindowModality(Qt.WindowModality.ApplicationModal)
-        dg_settings.resize(376, 423)
+        dg_settings.resize(405, 423)
         font = QFont()
         font.setPointSize(10)
         dg_settings.setFont(font)
@@ -264,6 +264,7 @@ class Ui_dg_settings(object):
         self.retranslateUi(dg_settings)
 
         self.tabWidget.setCurrentIndex(0)
+        self.cb_flow_control.setCurrentIndex(2)
 
 
         QMetaObject.connectSlotsByName(dg_settings)
@@ -309,12 +310,14 @@ class Ui_dg_settings(object):
         self.cb_buadrate.setItemText(18, QCoreApplication.translate("dg_settings", u"460800", None))
         self.cb_buadrate.setItemText(19, QCoreApplication.translate("dg_settings", u"921600", None))
 
+        self.cb_buadrate.setCurrentText(QCoreApplication.translate("dg_settings", u"9600", None))
         self.lb_bytesize.setText(QCoreApplication.translate("dg_settings", u"Bytesize:", None))
         self.cb_bytesize.setItemText(0, QCoreApplication.translate("dg_settings", u"5", None))
         self.cb_bytesize.setItemText(1, QCoreApplication.translate("dg_settings", u"6", None))
         self.cb_bytesize.setItemText(2, QCoreApplication.translate("dg_settings", u"7", None))
         self.cb_bytesize.setItemText(3, QCoreApplication.translate("dg_settings", u"8", None))
 
+        self.cb_bytesize.setCurrentText(QCoreApplication.translate("dg_settings", u"8", None))
         self.lb_parity.setText(QCoreApplication.translate("dg_settings", u"Parity:", None))
         self.cb_parity.setItemText(0, QCoreApplication.translate("dg_settings", u"None", None))
         self.cb_parity.setItemText(1, QCoreApplication.translate("dg_settings", u"Even", None))
@@ -332,6 +335,7 @@ class Ui_dg_settings(object):
         self.cb_flow_control.setItemText(1, QCoreApplication.translate("dg_settings", u"Hardware", None))
         self.cb_flow_control.setItemText(2, QCoreApplication.translate("dg_settings", u"None", None))
 
+        self.cb_flow_control.setCurrentText(QCoreApplication.translate("dg_settings", u"None", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_analyzer), QCoreApplication.translate("dg_settings", u"ANALYZER", None))
     # retranslateUi
 

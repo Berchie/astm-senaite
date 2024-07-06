@@ -1,0 +1,172 @@
+# -*- coding: utf-8 -*-
+
+################################################################################
+## Form generated from reading UI file 'MDI_MainWindow.ui'
+##
+## Created by: Qt User Interface Compiler version 6.7.2
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
+
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
+    QCursor, QFont, QFontDatabase, QGradient,
+    QIcon, QImage, QKeySequence, QLinearGradient,
+    QPainter, QPalette, QPixmap, QRadialGradient,
+    QTransform)
+from PySide6.QtWidgets import (QApplication, QMainWindow, QMdiArea, QMenu,
+    QMenuBar, QSizePolicy, QStatusBar, QVBoxLayout,
+    QWidget)
+import Icons_rc
+
+class Ui_MDI_MainWindow(object):
+    def setupUi(self, MDI_MainWindow):
+        if not MDI_MainWindow.objectName():
+            MDI_MainWindow.setObjectName(u"MDI_MainWindow")
+        MDI_MainWindow.resize(1112, 888)
+        icon = QIcon()
+        icon.addFile(u":/Main/port.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        MDI_MainWindow.setWindowIcon(icon)
+        self.new_act = QAction(MDI_MainWindow)
+        self.new_act.setObjectName(u"new_act")
+        icon1 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.DocumentNew))
+        self.new_act.setIcon(icon1)
+        self.actionStart_Listen = QAction(MDI_MainWindow)
+        self.actionStart_Listen.setObjectName(u"actionStart_Listen")
+        self.actionStop_Listen = QAction(MDI_MainWindow)
+        self.actionStop_Listen.setObjectName(u"actionStop_Listen")
+        self.actionSettings = QAction(MDI_MainWindow)
+        self.actionSettings.setObjectName(u"actionSettings")
+        self.exit_act = QAction(MDI_MainWindow)
+        self.exit_act.setObjectName(u"exit_act")
+        icon2 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ApplicationExit))
+        self.exit_act.setIcon(icon2)
+        self.exit_act.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.close_window_act = QAction(MDI_MainWindow)
+        self.close_window_act.setObjectName(u"close_window_act")
+        self.close_window_act.setEnabled(False)
+        self.close_all_windows_act = QAction(MDI_MainWindow)
+        self.close_all_windows_act.setObjectName(u"close_all_windows_act")
+        self.close_all_windows_act.setEnabled(False)
+        self.cascade_act = QAction(MDI_MainWindow)
+        self.cascade_act.setObjectName(u"cascade_act")
+        self.cascade_act.setEnabled(False)
+        self.tile_act = QAction(MDI_MainWindow)
+        self.tile_act.setObjectName(u"tile_act")
+        self.tile_act.setEnabled(False)
+        self.about_act = QAction(MDI_MainWindow)
+        self.about_act.setObjectName(u"about_act")
+        icon3 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.HelpAbout))
+        self.about_act.setIcon(icon3)
+        self.centralwidget = QWidget(MDI_MainWindow)
+        self.centralwidget.setObjectName(u"centralwidget")
+        self.verticalLayout = QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.child_mdi_area = QMdiArea(self.centralwidget)
+        self.child_mdi_area.setObjectName(u"child_mdi_area")
+        self.child_mdi_area.setLineWidth(1)
+        self.child_mdi_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.child_mdi_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+
+        self.verticalLayout.addWidget(self.child_mdi_area)
+
+        MDI_MainWindow.setCentralWidget(self.centralwidget)
+        self.mdi_menubar = QMenuBar(MDI_MainWindow)
+        self.mdi_menubar.setObjectName(u"mdi_menubar")
+        self.mdi_menubar.setGeometry(QRect(0, 0, 1112, 19))
+        self.menuFile = QMenu(self.mdi_menubar)
+        self.menuFile.setObjectName(u"menuFile")
+        self.menuWindow = QMenu(self.mdi_menubar)
+        self.menuWindow.setObjectName(u"menuWindow")
+        self.menuHelp = QMenu(self.mdi_menubar)
+        self.menuHelp.setObjectName(u"menuHelp")
+        MDI_MainWindow.setMenuBar(self.mdi_menubar)
+        self.mdi_main_window_statusbar = QStatusBar(MDI_MainWindow)
+        self.mdi_main_window_statusbar.setObjectName(u"mdi_main_window_statusbar")
+        self.mdi_main_window_statusbar.setSizeGripEnabled(False)
+        MDI_MainWindow.setStatusBar(self.mdi_main_window_statusbar)
+
+        self.mdi_menubar.addAction(self.menuFile.menuAction())
+        self.mdi_menubar.addAction(self.menuWindow.menuAction())
+        self.mdi_menubar.addAction(self.menuHelp.menuAction())
+        self.menuFile.addAction(self.new_act)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.exit_act)
+        self.menuWindow.addAction(self.close_window_act)
+        self.menuWindow.addAction(self.close_all_windows_act)
+        self.menuWindow.addSeparator()
+        self.menuWindow.addAction(self.cascade_act)
+        self.menuWindow.addAction(self.tile_act)
+        self.menuWindow.addSeparator()
+        self.menuHelp.addAction(self.about_act)
+
+        self.retranslateUi(MDI_MainWindow)
+
+        QMetaObject.connectSlotsByName(MDI_MainWindow)
+    # setupUi
+
+    def retranslateUi(self, MDI_MainWindow):
+        MDI_MainWindow.setWindowTitle(QCoreApplication.translate("MDI_MainWindow", u"ASTM To SENAITE LIMS Middleware", None))
+        self.new_act.setText(QCoreApplication.translate("MDI_MainWindow", u"&New", None))
+        self.new_act.setIconText(QCoreApplication.translate("MDI_MainWindow", u"New", None))
+#if QT_CONFIG(tooltip)
+        self.new_act.setToolTip(QCoreApplication.translate("MDI_MainWindow", u"New Middleware", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        self.new_act.setStatusTip(QCoreApplication.translate("MDI_MainWindow", u"Create a new middleware", None))
+#endif // QT_CONFIG(statustip)
+#if QT_CONFIG(shortcut)
+        self.new_act.setShortcut(QCoreApplication.translate("MDI_MainWindow", u"Ctrl+N", None))
+#endif // QT_CONFIG(shortcut)
+        self.actionStart_Listen.setText(QCoreApplication.translate("MDI_MainWindow", u"Start Listen", None))
+        self.actionStop_Listen.setText(QCoreApplication.translate("MDI_MainWindow", u"Stop Listen", None))
+        self.actionSettings.setText(QCoreApplication.translate("MDI_MainWindow", u"Settings", None))
+        self.exit_act.setText(QCoreApplication.translate("MDI_MainWindow", u"&Exit", None))
+#if QT_CONFIG(tooltip)
+        self.exit_act.setToolTip(QCoreApplication.translate("MDI_MainWindow", u"Exit Application", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        self.exit_act.setStatusTip(QCoreApplication.translate("MDI_MainWindow", u"Exit application", None))
+#endif // QT_CONFIG(statustip)
+#if QT_CONFIG(shortcut)
+        self.exit_act.setShortcut(QCoreApplication.translate("MDI_MainWindow", u"Ctrl+Q", None))
+#endif // QT_CONFIG(shortcut)
+        self.close_window_act.setText(QCoreApplication.translate("MDI_MainWindow", u"Cl&ose Window", None))
+#if QT_CONFIG(statustip)
+        self.close_window_act.setStatusTip(QCoreApplication.translate("MDI_MainWindow", u"Close Active Window", None))
+#endif // QT_CONFIG(statustip)
+#if QT_CONFIG(shortcut)
+        self.close_window_act.setShortcut(QCoreApplication.translate("MDI_MainWindow", u"Ctrl+W", None))
+#endif // QT_CONFIG(shortcut)
+        self.close_all_windows_act.setText(QCoreApplication.translate("MDI_MainWindow", u"Close &All Windows", None))
+#if QT_CONFIG(statustip)
+        self.close_all_windows_act.setStatusTip(QCoreApplication.translate("MDI_MainWindow", u"Close All Windows", None))
+#endif // QT_CONFIG(statustip)
+#if QT_CONFIG(shortcut)
+        self.close_all_windows_act.setShortcut(QCoreApplication.translate("MDI_MainWindow", u"Ctrl+Shift+W", None))
+#endif // QT_CONFIG(shortcut)
+        self.cascade_act.setText(QCoreApplication.translate("MDI_MainWindow", u"&Cascade", None))
+#if QT_CONFIG(statustip)
+        self.cascade_act.setStatusTip(QCoreApplication.translate("MDI_MainWindow", u"Cascade Windows", None))
+#endif // QT_CONFIG(statustip)
+#if QT_CONFIG(shortcut)
+        self.cascade_act.setShortcut(QCoreApplication.translate("MDI_MainWindow", u"Ctrl+Shift+C", None))
+#endif // QT_CONFIG(shortcut)
+        self.tile_act.setText(QCoreApplication.translate("MDI_MainWindow", u"&Tile", None))
+#if QT_CONFIG(statustip)
+        self.tile_act.setStatusTip(QCoreApplication.translate("MDI_MainWindow", u"Tile Windows", None))
+#endif // QT_CONFIG(statustip)
+#if QT_CONFIG(shortcut)
+        self.tile_act.setShortcut(QCoreApplication.translate("MDI_MainWindow", u"Ctrl+Shift+T", None))
+#endif // QT_CONFIG(shortcut)
+        self.about_act.setText(QCoreApplication.translate("MDI_MainWindow", u"About", None))
+#if QT_CONFIG(statustip)
+        self.about_act.setStatusTip(QCoreApplication.translate("MDI_MainWindow", u"About the Application", None))
+#endif // QT_CONFIG(statustip)
+        self.menuFile.setTitle(QCoreApplication.translate("MDI_MainWindow", u"&File", None))
+        self.menuWindow.setTitle(QCoreApplication.translate("MDI_MainWindow", u"&Window", None))
+        self.menuHelp.setTitle(QCoreApplication.translate("MDI_MainWindow", u"&Help", None))
+    # retranslateUi
+

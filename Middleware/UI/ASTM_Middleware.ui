@@ -130,8 +130,28 @@
            <bool>true</bool>
           </property>
           <property name="columnCount">
-           <number>0</number>
+           <number>4</number>
           </property>
+          <column>
+           <property name="text">
+            <string>DateTime</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Analyzer</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Sample ID</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Message</string>
+           </property>
+          </column>
          </widget>
         </item>
        </layout>
@@ -151,7 +171,7 @@
        </property>
        <layout class="QVBoxLayout" name="astm_msg_layout">
         <item>
-         <widget class="QPlainTextEdit" name="ptxt_astm_message">
+         <widget class="QTextEdit" name="astm_msg_textEdit">
           <property name="readOnly">
            <bool>true</bool>
           </property>
