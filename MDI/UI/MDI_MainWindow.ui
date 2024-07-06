@@ -6,17 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>891</width>
-    <height>620</height>
+    <width>1112</width>
+    <height>888</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>ASTM To SENAITE LIMS Middleware</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../../Icons/Icons.qrc">
+    <normaloff>:/Main/port.png</normaloff>:/Main/port.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QMdiArea" name="child_mdi_area">
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
       <property name="verticalScrollBarPolicy">
        <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
       </property>
@@ -32,30 +39,62 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>891</width>
+     <width>1112</width>
      <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>&amp;File</string>
     </property>
-    <addaction name="actionNew"/>
+    <addaction name="new_act"/>
     <addaction name="separator"/>
-    <addaction name="actionExit"/>
+    <addaction name="exit_act"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
-     <string>Window</string>
+     <string>&amp;Window</string>
     </property>
+    <addaction name="close_window_act"/>
+    <addaction name="close_all_windows_act"/>
+    <addaction name="separator"/>
+    <addaction name="cascade_act"/>
+    <addaction name="tile_act"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="about_act"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuWindow"/>
+   <addaction name="menuHelp"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionNew">
+  <widget class="QStatusBar" name="mdi_main_window_statusbar">
+   <property name="sizeGripEnabled">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <action name="new_act">
+   <property name="icon">
+    <iconset theme="QIcon::ThemeIcon::DocumentNew"/>
+   </property>
    <property name="text">
+    <string>&amp;New</string>
+   </property>
+   <property name="iconText">
     <string>New</string>
+   </property>
+   <property name="toolTip">
+    <string>New Middleware</string>
+   </property>
+   <property name="statusTip">
+    <string>Create a new middleware</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionStart_Listen">
@@ -73,12 +112,96 @@
     <string>Settings</string>
    </property>
   </action>
-  <action name="actionExit">
+  <action name="exit_act">
+   <property name="icon">
+    <iconset theme="QIcon::ThemeIcon::ApplicationExit"/>
+   </property>
    <property name="text">
-    <string>Exit</string>
+    <string>&amp;Exit</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit Application</string>
+   </property>
+   <property name="statusTip">
+    <string>Exit application</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::ShortcutContext::WindowShortcut</enum>
+   </property>
+  </action>
+  <action name="close_window_act">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Cl&amp;ose Window</string>
+   </property>
+   <property name="statusTip">
+    <string>Close Active Window</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="close_all_windows_act">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Close &amp;All Windows</string>
+   </property>
+   <property name="statusTip">
+    <string>Close All Windows</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+W</string>
+   </property>
+  </action>
+  <action name="cascade_act">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Cascade</string>
+   </property>
+   <property name="statusTip">
+    <string>Cascade Windows</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+C</string>
+   </property>
+  </action>
+  <action name="tile_act">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Tile</string>
+   </property>
+   <property name="statusTip">
+    <string>Tile Windows</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+T</string>
+   </property>
+  </action>
+  <action name="about_act">
+   <property name="icon">
+    <iconset theme="QIcon::ThemeIcon::HelpAbout"/>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="statusTip">
+    <string>About the Application</string>
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../Icons/Icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

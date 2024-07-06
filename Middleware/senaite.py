@@ -43,28 +43,29 @@ def readJsonSenaiteSettings():
     senaite_data = None
     count = 0
 
-    with open(filepath, "r") as jsonfile:
-        json_data = json.load(jsonfile)
+    if os.path.getsize(filepath) > 0:
+        with open(filepath, "r") as jsonfile:
+            json_data = json.load(jsonfile)
 
-    if json_data:
-        for analyzer in json_data:
-            if count == 0:  # using count to get only the first element
-                senaite_data = json_data[analyzer]
+        if json_data:
+            for analyzer in json_data:
+                if count == 0:  # using count to get only the first element
+                    senaite_data = json_data[analyzer]
 
-            count += 1
+                count += 1
 
-        if senaite_data:
-            for key in senaite_data:
-                if key == "server":
-                    data_to_be_unpack.append(senaite_data["server"])
-                if key == "port":
-                    data_to_be_unpack.append(senaite_data["port"])
-                if key == "site":
-                    data_to_be_unpack.append(senaite_data["site"])
-                # if key == "username":
-                #     data_to_be_unpack.append(senaite_data["username"])
-                # if key == "password":
-                #     data_to_be_unpack.append(senaite_data["password"])
+            if senaite_data:
+                for key in senaite_data:
+                    if key == "server":
+                        data_to_be_unpack.append(senaite_data["server"])
+                    if key == "port":
+                        data_to_be_unpack.append(senaite_data["port"])
+                    if key == "site":
+                        data_to_be_unpack.append(senaite_data["site"])
+                    # if key == "username":
+                    #     data_to_be_unpack.append(senaite_data["username"])
+                    # if key == "password":
+                    #     data_to_be_unpack.append(senaite_data["password"])
 
     return data_to_be_unpack
 

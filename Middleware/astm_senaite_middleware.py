@@ -2,11 +2,10 @@ import os
 import sys
 import json
 import threading
-import requests
 import serial
 import sqlite3
-from PySide6.QtCore import Slot, Signal, QIODevice, QObject, QThread
-from PySide6.QtWidgets import QMainWindow, QMessageBox, QApplication, QWidget, QTableWidgetItem
+from PySide6.QtCore import Slot, Signal, QObject, QThread
+from PySide6.QtWidgets import QMessageBox, QApplication, QWidget, QTableWidgetItem
 from Middleware.UI.ASTM_Middleware import Ui_astm_middleware
 from Settings.settings import SettingsForm
 from Middleware.fujifilm_chemistry_nx500 import nx500_parser_data
@@ -25,7 +24,7 @@ db_path = os.path.join(os.path.dirname(__file__), "..", "result_astm.db")
 def read_json_serial_setting(analyzer_name):
     serial_config_values = None
     comport_parameters = []
-    # comport_parameters_value =
+    # comport_parameters_value = putting everything together to mdi window
 
     bytesize = {"5": serial.FIVEBITS, "6": serial.SIXBITS, "7": serial.SEVENBITS, "8": serial.EIGHTBITS}
     parity = {"None": serial.PARITY_NONE, "Even": serial.PARITY_EVEN, "Odd": serial.PARITY_ODD, "Mark": serial.PARITY_MARK, "Space": serial.PARITY_SPACE}
@@ -227,7 +226,7 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
 
     @Slot(str)
     def update_windowTitle(self, title):
-        self.setWindowTitle(title)
+        self.setWindowTitle(f"{title}-ASTM Middleware")
         self.analyzerName = title
 
     @Slot(bytes)
@@ -322,6 +321,13 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
 
         self.btn_start_listener.setEnabled(True)
         self.btn_settings.setEnabled(True)
+
+    def closeEvent(self, event):
+        if self.uiWorker:
+            self.uiWorker.stop()
+            self.uiWorkerThread.quit()
+            self.uiWorkerThread.wait()
+            event.accept()
 
 
 if __name__ == '__main__':

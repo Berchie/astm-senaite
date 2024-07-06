@@ -5,6 +5,8 @@ import requests
 from PySide6 import QtCore as qtc
 from PySide6 import QtWidgets as qtw
 from PySide6 import QtSerialPort as qts
+from PySide6.QtCore import Qt
+
 from Settings.UI.settings import Ui_dg_settings
 
 
