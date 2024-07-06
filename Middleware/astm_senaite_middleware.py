@@ -2,18 +2,24 @@ import os
 import sys
 import json
 import threading
-
 import requests
 import serial
+import sqlite3
 from PySide6.QtCore import Slot, Signal, QIODevice, QObject, QThread
-from PySide6.QtWidgets import QMainWindow, QMessageBox, QApplication, QWidget
-from PySide6 import QtGui as qtg
+from PySide6.QtWidgets import QMainWindow, QMessageBox, QApplication, QWidget, QTableWidgetItem
 from Middleware.UI.ASTM_Middleware import Ui_astm_middleware
 from Settings.settings import SettingsForm
+from Middleware.fujifilm_chemistry_nx500 import nx500_parser_data
+from Middleware.process_astm_message import parse_astm_data
+from Middleware.senaite import transfer_to_senaite
+from senaite_connect import login_senaite_api
 
 
 # setting.json filepath
 filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "settings.json"))
+
+# sqlit database path
+db_path = os.path.join(os.path.dirname(__file__), "..", "result_astm.db")
 
 
 def read_json_serial_setting(analyzer_name):
@@ -132,9 +138,11 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
 
     def __init__(self):
         super().__init__()
+        self.setupUi(self)
+
         self.uiWorker = None
         self.uiWorkerThread = None
-        self.setupUi(self)
+        self.form_Settings = None
 
         # setup
         self.analyzerName = None
@@ -146,6 +154,18 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
         # buffer
         self.buffer = b''
 
+        # string astm message
+        self.astm_message = ''
+
+        # tableWidget
+        self.sqlite_data_table.setColumnWidth(0, 200)
+        self.sqlite_data_table.setColumnWidth(1, 80)
+        self.sqlite_data_table.setColumnWidth(2, 110)
+        self.sqlite_data_table.setColumnWidth(3, 300)
+
+        # load data into QTableWidget
+        self.load_sqlite_db_data()
+
         # self.uiWorkerThread = QThread()
         # self.uiWorker = SerialReadWorker(self.port, self.buadrate, self.bytesize, self.parity, self.stopbits, self.xonxoff, self.rtscts)
         # self.uiWorker.moveToThread(self.uiWorkerThread)
@@ -156,6 +176,26 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
         self.btn_settings.clicked.connect(self.middleware_settings)
         self.btn_start_listener.clicked.connect(self.startListener)
         self.btn_stop_listener.clicked.connect(self.stopListener)
+
+    def load_sqlite_db_data(self):
+
+        try:
+            if os.path.exists(db_path):
+                conn = sqlite3.connect(db_path)
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM transactions")
+
+                sqlit_data = cursor.fetchall()
+                self.sqlite_data_table.setRowCount(len(sqlit_data))
+
+                for row, row_data in enumerate(sqlit_data):
+                    for col, cell_data in enumerate(row_data):
+                        self.sqlite_data_table.setItem(row, col, QTableWidgetItem(cell_data))
+
+                cursor.close()
+                conn.close()
+        except Exception as e:
+            QMessageBox.critical(self, "SQLite Error", f"Error occurred: {str(e)}")
 
     @Slot()
     def middleware_settings(self):
@@ -181,6 +221,9 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
 
             self.btn_start_listener.setEnabled(False)
             self.btn_settings.setEnabled(False)
+
+            # login to senaite api
+            login_senaite_api()
 
     @Slot(str)
     def update_windowTitle(self, title):
@@ -221,6 +264,7 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
                 if end_block_pos != -1:
                     message_block = self.buffer[stx_pos + 1:end_block_pos]
                     self.buffer = self.buffer[end_block_pos + 1:]
+                    self.astm_message += message_block.decode()
                     self.astm_msg_textEdit.append(f"Received block: {message_block.decode()}")
                     self.uiWorker.write_to_port(ACK)
                     self.astm_msg_textEdit.append("Block ACK sent.")
@@ -243,6 +287,21 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
                 break
 
             break
+
+        # passing the message through a parser to process the message to transfer to senaite lims
+        if self.analyzerName == "DRI-CHEM NX500":
+            if self.astm_message:
+                data = nx500_parser_data(self.astm_message)
+                if data:
+                    transfer_to_senaite(data)
+        else:
+            if self.astm_message:
+                data = parse_astm_data(self.astm_message)
+                if data:
+                    transfer_to_senaite(data)
+
+        # load data into the table for newly added
+        self.load_sqlite_db_data()
 
     def sendData(self):
         data = "Hello Serial Port"

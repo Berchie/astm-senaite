@@ -4,10 +4,9 @@ import json
 import requests
 from PySide6 import QtCore as qtc
 from PySide6 import QtWidgets as qtw
-from PySide6 import QtGui as qtg
 from PySide6 import QtSerialPort as qts
-
 from Settings.UI.settings import Ui_dg_settings
+
 
 filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "settings.json"))
 
@@ -26,10 +25,11 @@ def read_json_settings(analyzer_name):
         with open(filepath, 'r') as jsonFile:
             data = json.load(jsonFile)
 
-        for analyzer in data:
-            if analyzer == analyzer_name:
-                settings_values = data[analyzer]
-                # settings_values = tuple(settings_values)
+        if data:
+            for analyzer in data:
+                if analyzer == analyzer_name:
+                    settings_values = data[analyzer]
+                    # settings_values = tuple(settings_values)
 
         return settings_values
 
@@ -110,39 +110,44 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
             self.stopbits = self.cb_stopbits.currentText()
             self.flow_control = self.cb_flow_control.currentText()
 
-            settings_values.update({"server": self.server})
-            settings_values.update({"port": self.port})
-            settings_values.update({"site": self.site})
-            settings_values.update({"username": self.username})
-            settings_values.update({"password": self.password})
-            settings_values.update({"analyzer": self.analyzer})
-            settings_values.update({"port_name": self.comport})
-            settings_values.update({"buadrate": self.buadrate})
-            settings_values.update({"bytesize": self.bytesize})
-            settings_values.update({"parity": self.parity})
-            settings_values.update({"stopbits": self.stopbits})
-            settings_values.update({"flowcontrol": self.flow_control})
-
-            analyzer_settings.update({self.analyzer: settings_values})
-
-            if os.path.getsize(filepath) == 0:
-                with open(filepath, 'w') as jsonfile:
-                    json.dump(analyzer_settings, jsonfile, indent=4)
+            if self.server == "" or self.port == "" or self.site == "" or self.username == "" or self.username == "" or self.password == "":
+                qtw.QMessageBox.information(self, "Settings-Caution", "Missing SENAITE LIMS information.\nPlease provide the information.")
+            elif self.analyzer == "Select Analyzer":
+                qtw.QMessageBox.information(self, "Settings-Caution", "Please provide analyzer name.")
             else:
-                with open(filepath, 'r') as jsonFile:
-                    data = json.load(jsonFile)
+                settings_values.update({"server": self.server})
+                settings_values.update({"port": self.port})
+                settings_values.update({"site": self.site})
+                settings_values.update({"username": self.username})
+                settings_values.update({"password": self.password})
+                settings_values.update({"analyzer": self.analyzer})
+                settings_values.update({"port_name": self.comport})
+                settings_values.update({"buadrate": self.buadrate})
+                settings_values.update({"bytesize": self.bytesize})
+                settings_values.update({"parity": self.parity})
+                settings_values.update({"stopbits": self.stopbits})
+                settings_values.update({"flowcontrol": self.flow_control})
 
-                data.update(analyzer_settings)
+                analyzer_settings.update({self.analyzer: settings_values})
 
-                with open(filepath, 'w') as jsonfile:
-                    json.dump(data, jsonfile, indent=4)
+                if os.path.getsize(filepath) == 0:
+                    with open(filepath, 'w') as jsonfile:
+                        json.dump(analyzer_settings, jsonfile, indent=4)
+                else:
+                    with open(filepath, 'r') as jsonFile:
+                        data = json.load(jsonFile)
 
-            # emit signal
-            self.saved.emit(self.analyzer)
+                    data.update(analyzer_settings)
 
-            qtw.QMessageBox.information(self, "Saving Settings", f"{self.analyzer} settings saved!")
+                    with open(filepath, 'w') as jsonfile:
+                        json.dump(data, jsonfile, indent=4)
 
-            self.close()
+                # emit signal
+                self.saved.emit(self.analyzer)
+
+                qtw.QMessageBox.information(self, "Saving Settings", f"{self.analyzer} settings saved!")
+
+                self.close()
 
         except Exception as e:
             qtw.QMessageBox.critical(self, "Error", f"{e}")

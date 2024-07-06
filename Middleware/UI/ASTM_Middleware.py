@@ -85,9 +85,19 @@ class Ui_astm_middleware(object):
         self.sqlite_db_table_layout = QVBoxLayout(self.gb_sqlite_view_data_table)
         self.sqlite_db_table_layout.setObjectName(u"sqlite_db_table_layout")
         self.sqlite_data_table = QTableWidget(self.gb_sqlite_view_data_table)
+        if (self.sqlite_data_table.columnCount() < 4):
+            self.sqlite_data_table.setColumnCount(4)
+        __qtablewidgetitem = QTableWidgetItem()
+        self.sqlite_data_table.setHorizontalHeaderItem(0, __qtablewidgetitem)
+        __qtablewidgetitem1 = QTableWidgetItem()
+        self.sqlite_data_table.setHorizontalHeaderItem(1, __qtablewidgetitem1)
+        __qtablewidgetitem2 = QTableWidgetItem()
+        self.sqlite_data_table.setHorizontalHeaderItem(2, __qtablewidgetitem2)
+        __qtablewidgetitem3 = QTableWidgetItem()
+        self.sqlite_data_table.setHorizontalHeaderItem(3, __qtablewidgetitem3)
         self.sqlite_data_table.setObjectName(u"sqlite_data_table")
         self.sqlite_data_table.setWordWrap(True)
-        self.sqlite_data_table.setColumnCount(0)
+        self.sqlite_data_table.setColumnCount(4)
 
         self.sqlite_db_table_layout.addWidget(self.sqlite_data_table)
 
@@ -130,6 +140,14 @@ class Ui_astm_middleware(object):
         self.btn_stop_listener.setText(QCoreApplication.translate("astm_middleware", u"Stop Listener", None))
         self.btn_settings.setText(QCoreApplication.translate("astm_middleware", u"Settings", None))
         self.gb_sqlite_view_data_table.setTitle("")
+        ___qtablewidgetitem = self.sqlite_data_table.horizontalHeaderItem(0)
+        ___qtablewidgetitem.setText(QCoreApplication.translate("astm_middleware", u"DateTime", None));
+        ___qtablewidgetitem1 = self.sqlite_data_table.horizontalHeaderItem(1)
+        ___qtablewidgetitem1.setText(QCoreApplication.translate("astm_middleware", u"Analyzer", None));
+        ___qtablewidgetitem2 = self.sqlite_data_table.horizontalHeaderItem(2)
+        ___qtablewidgetitem2.setText(QCoreApplication.translate("astm_middleware", u"Sample ID", None));
+        ___qtablewidgetitem3 = self.sqlite_data_table.horizontalHeaderItem(3)
+        ___qtablewidgetitem3.setText(QCoreApplication.translate("astm_middleware", u"Message", None));
         self.gb_astm_message.setTitle(QCoreApplication.translate("astm_middleware", u"ASTM Message from the Analyzer", None))
     # retranslateUi
 
