@@ -9,15 +9,17 @@ from PySide6.QtCore import Qt
 
 from Settings.UI.settings import Ui_dg_settings
 
-
 filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "settings.json"))
+text_filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "setting_names.txt"))
 
 
 def com_ports():
-    ports = [""]
-    for port in qts.QSerialPortInfo().portName():
-        ports.append(port)
-    return ports
+    port_list = [""]
+
+    for port in qts.QSerialPortInfo().availablePorts():
+        port_list.append(port.portName())
+
+    return port_list
 
 
 def read_json_settings(analyzer_name):
@@ -37,8 +39,9 @@ def read_json_settings(analyzer_name):
 
 
 class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
-    #
-    saved = qtc.Signal(str)
+    analyzer_settings_name = qtc.Signal(str)
+    saved = qtc.Signal(str, str)
+    settings_name = None
 
     def __init__(self, analyzer):
         super().__init__()
@@ -81,7 +84,8 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
         self.btnbx_reset_senaite_settings.clicked.connect(self.rest)
 
         # restore analyzer settings
-        self.btnbx_restore_analyzer_default_settings.button(qtw.QDialogButtonBox.StandardButton.RestoreDefaults).clicked.connect(self.restore)
+        self.btnbx_restore_analyzer_default_settings.button(
+            qtw.QDialogButtonBox.StandardButton.RestoreDefaults).clicked.connect(self.restore)
 
         # test senaite connection
         self.pb_test_lims.clicked.connect(self.test_senaite)
@@ -113,7 +117,8 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
             self.flow_control = self.cb_flow_control.currentText()
 
             if self.server == "" or self.port == "" or self.site == "" or self.username == "" or self.username == "" or self.password == "":
-                qtw.QMessageBox.information(self, "Settings-Caution", "Missing SENAITE LIMS information.\nPlease provide the information.")
+                qtw.QMessageBox.information(self, "Settings-Caution",
+                                            "Missing SENAITE LIMS information.\nPlease provide the information.")
             elif self.analyzer == "Select Analyzer":
                 qtw.QMessageBox.information(self, "Settings-Caution", "Please provide analyzer name.")
             else:
@@ -130,7 +135,7 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
                 settings_values.update({"stopbits": self.stopbits})
                 settings_values.update({"flowcontrol": self.flow_control})
 
-                analyzer_settings.update({self.analyzer: settings_values})
+                analyzer_settings.update({f"{self.analyzer}_{self.cb_comport.currentText().strip()}": settings_values})
 
                 if os.path.getsize(filepath) == 0:
                     with open(filepath, 'w') as jsonfile:
@@ -145,7 +150,10 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
                         json.dump(data, jsonfile, indent=4)
 
                 # emit signal
-                self.saved.emit(self.analyzer)
+                self.saved.emit(self.analyzer, self.comport)
+                self.analyzer_settings_name.emit(f"{self.analyzer}_{self.comport}")
+
+                #self.store_settings_name()
 
                 qtw.QMessageBox.information(self, "Saving Settings", f"{self.analyzer} settings saved!")
 
@@ -174,8 +182,9 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
     def test_senaite(self):
         try:
             senaite_url = f"{self.txt_sever_name_ip_address.text().strip()}:{self.txt_senaite_port.text().strip()}/{self.txt_site_id.text().strip()}"
-            resp = requests.post(f"http://{senaite_url}/@@API/senaite/v1/login", params={"__ac_name": self.txt_senaite_username.text().strip(),
-                                                                                         "__ac_password": self.txt_senaite_password.text().strip()})
+            resp = requests.post(f"http://{senaite_url}/@@API/senaite/v1/login",
+                                 params={"__ac_name": self.txt_senaite_username.text().strip(),
+                                         "__ac_password": self.txt_senaite_password.text().strip()})
 
             if resp.status_code == 200 and resp.json()["items"]:
                 self.msgBox.setText("Connection to SENAITE LIMS is successful!")
@@ -228,6 +237,10 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
                         self.cb_flow_control.setCurrentText(uploaded_settings[key])
                     case _:
                         pass
+
+    def store_settings_name(self):
+        with open(text_filepath, "a+") as textfile:
+            textfile.write(f"{self.analyzer}_{self.comport}\n")
 
 
 if __name__ == "__main__":

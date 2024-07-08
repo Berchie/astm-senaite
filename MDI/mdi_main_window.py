@@ -66,7 +66,7 @@ class MainWindow(QMainWindow, Ui_MDI_MainWindow):
         # Analyzer - ASTM Middleware
         MainWindow.sequence_number = MainWindow.sequence_number + 1
         child = MiddlewareWindow()
-        child.setWindowTitle(f"Analyzer-ASTM Middleware{str(MainWindow.sequence_number)}")
+        child.setWindowTitle(f"Analyzer - ASTM Middleware{str(MainWindow.sequence_number)}")
         self.child_mdi_area.addSubWindow(child)
 
         return child
@@ -135,6 +135,7 @@ class MainWindow(QMainWindow, Ui_MDI_MainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setStyle("Fusion")
 
     window = MainWindow()
     window.show()

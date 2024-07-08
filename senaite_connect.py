@@ -45,7 +45,7 @@ def readJsonSenaiteSettings():
 
         if json_data:
             for analyzer in json_data:
-                if count == 0:      # using count to get only the first element
+                if count == 0:  # using count to get only the first element
                     senaite_data = json_data[analyzer]
 
                 count += 1
@@ -69,19 +69,34 @@ def readJsonSenaiteSettings():
 # SENAITE.JSONAPI route
 API_BASE_URL = "/@@API/senaite/v1"
 
-data_unpack = readJsonSenaiteSettings()
-
-server = None
-port = None
-site = None
-
-if data_unpack:
-    server, port, site, username, password = data_unpack
-
-SENAITE_API_URL = f"http://{server}:{port}/{site}/{API_BASE_URL}"
+# data_unpack = readJsonSenaiteSettings()
+#
+# server = None
+# port = None
+# site = None
+# username = None
+# password = None
+#
+# if data_unpack:
+#     server, port, site, username, password = data_unpack
+#
+# SENAITE_API_URL = f"http://{server}:{port}/{site}/{API_BASE_URL}"
 
 
 def login_senaite_api():
+    data_unpack = readJsonSenaiteSettings()
+
+    server = None
+    port = None
+    site = None
+    username = None
+    password = None
+
+    if data_unpack:
+        server, port, site, username, password = data_unpack
+
+    SENAITE_API_URL = f"http://{server}:{port}/{site}/{API_BASE_URL}"
+
     try:
         reqs = requests.post(f"{SENAITE_API_URL}/login", params={"__ac_name": username, "__ac_password": password})
 
@@ -118,7 +133,8 @@ def login_senaite_api():
             with open(config_file_path, 'w') as configfile:
                 config.write(configfile)
     except Exception as e:
-        show_message_box("Critical", "Error", str(e))
+        # show_message_box("Critical", "Error", str(e))
+        print(str(e))
 
 
 if __name__ == "__main__":

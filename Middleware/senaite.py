@@ -9,6 +9,10 @@ from PySide6.QtWidgets import QApplication, QMessageBox
 cookie_config = configparser.ConfigParser()
 cookie_config.read(os.path.join(os.path.dirname(__file__), "..", "cookie.ini"))
 
+text_filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "setting_names.txt"))
+
+stored_settings_name = ''
+
 
 def show_message_box(level, title, message):
     # create an instance of QApplication if not already present
@@ -36,7 +40,19 @@ def show_message_box(level, title, message):
         app.exit()
 
 
-def readJsonSenaiteSettings():
+def process_settings_name(data_sn):
+    global stored_settings_name
+    stored_settings_name = data_sn
+
+
+def readTextFileSettings():
+    with open(text_filepath, 'r') as tf:
+        text_data = tf.read()
+
+    return text_data.strip()
+
+
+def readJsonSenaiteSettings(setting_name):
     filepath = os.path.join(os.path.dirname(__file__), "..", "settings.json")
 
     data_to_be_unpack = []
@@ -49,7 +65,7 @@ def readJsonSenaiteSettings():
 
         if json_data:
             for analyzer in json_data:
-                if count == 0:  # using count to get only the first element
+                if analyzer == setting_name:  # using count to get only the first element
                     senaite_data = json_data[analyzer]
 
                 count += 1
@@ -70,32 +86,43 @@ def readJsonSenaiteSettings():
     return data_to_be_unpack
 
 
-# SENAITE.JSONAPI route
 API_BASE_URL = "/@@API/senaite/v1"
 
-# server, port, site, username, password = readJsonSenaiteSettings("")
-data_unpack = readJsonSenaiteSettings()
-server = None
-port = None
-site = None
-if data_unpack:
-    server, port, site = data_unpack
 
-SENAITE_API_URL = f"http://{server}:{port}/{site}/{API_BASE_URL}"
+def senaite_api_url():
+    # SENAITE.JSONAPI route
+    # API_BASE_URL = "/@@API/senaite/v1"
+    SENAITE_API_URL = None
+    data_unpack = None
+
+    # server, port, site, username, password = readJsonSenaiteSettings("")
+    if stored_settings_name:
+        data_unpack = readJsonSenaiteSettings(stored_settings_name)
+    server = None
+    port = None
+    site = None
+    if data_unpack:
+        server, port, site = data_unpack
+
+    SENAITE_API_URL = f"http://{server}:{port}/{site}/{API_BASE_URL}"
+
+    return SENAITE_API_URL
 
 
 def client_uid_path(sample_id):
+    senaite_url = senaite_api_url()
     try:
         client_uid = ''
 
-        # base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
-        resp = requests.get(f'{SENAITE_API_URL}/search', params={'id': sample_id}, cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]})
+        base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
+        resp = requests.get(f'{senaite_url}/search', params={'id': sample_id},
+                            cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]})
         analysis_path = resp.json()
         analysis_path = analysis_path['items']
         if resp.status_code == 200 and analysis_path:
             client_uid = analysis_path[0]['path']
         else:
-            print("Sample ID doesn't exist in SENAITE!")
+            # print("Sample ID doesn't exist in SENAITE!")
             show_message_box("Information", "SENAITE Error", "Sample ID doesn't exist in SENAITE!")
 
     # except requests.exceptions.ConnectionError as ce:
@@ -117,9 +144,11 @@ def client_uid_path(sample_id):
 def get_sample_path():
     # ask the user for the senaite api url
     # base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
+    base_url = senaite_api_url()
 
     try:
-        resp = requests.get(f'{SENAITE_API_URL}/AnalysisService/', params={'limit': '50', 'review_state': 'active', 'complete': 'true'},
+        resp = requests.get(f'{base_url}/AnalysisService/',
+                            params={'limit': '50', 'review_state': 'active', 'complete': 'true'},
                             cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]})
         data = resp.json()
         data = data["items"]
@@ -143,8 +172,11 @@ def get_analysis_service():
     # ask the user for the senaite api url
     # base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
     # af_url = "http://10.5.50.43:8091/agogo-test/@@API/senaite/v1"
+    lims_apu_url = senaite_api_url()
+
     try:
-        resp = requests.get(f'{SENAITE_API_URL}/AnalysisService/', params={'limit': '50', 'review_state': 'active', 'complete': 'true'},
+        resp = requests.get(f'{lims_apu_url}/AnalysisService/',
+                            params={'limit': '50', 'review_state': 'active', 'complete': 'true'},
                             cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]}, timeout=15)
         data = resp.json()
         data = data["items"]
@@ -174,11 +206,12 @@ def transfer_to_senaite(analyzer_result):
     # senaite_url = f"http://localhost:8080/senaite/@@API/senaite/v1/update"
     # Specify the appropriate header for the POST request
     headers = {'Content-type': 'application/json'}
+    api_url_senaite = senaite_api_url()
 
     if len(analyzer_result) == 1:
 
         # print(analyzer_result[0])
-        response = requests.post(f"{SENAITE_API_URL}/update", headers=headers, json=analyzer_result[0],
+        response = requests.post(f"{api_url_senaite}/update", headers=headers, json=analyzer_result[0],
                                  cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]})
 
         # Handling the response from the server
@@ -187,8 +220,9 @@ def transfer_to_senaite(analyzer_result):
             # print('Transfer was successful')
             # print(response.json())
         else:
-            show_message_box("Information", "Transfer of Result", f"Transfer failed with status code: {response.status_code}.\n"
-                                                                  f"The transfer result already exit in SENAITE LIMS!")
+            show_message_box("Information", "Transfer of Result",
+                             f"Transfer failed with status code: {response.status_code}.\n"
+                             f"The transfer result already exit or not registered in SENAITE LIMS!")
             # print('Request failed with status code:', response.status_code)
 
     else:
@@ -196,7 +230,7 @@ def transfer_to_senaite(analyzer_result):
         for results in analyzer_result:
             # send the post request
             # json_str = json.dumps(result)
-            response = requests.post(f"{SENAITE_API_URL}/update", headers=headers, json=results,
+            response = requests.post(f"{api_url_senaite}/update", headers=headers, json=results,
                                      cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]})
 
             # Handling the response from the server
@@ -210,12 +244,15 @@ def transfer_to_senaite(analyzer_result):
                 tcd = response.status_code
 
         if transfer_err > 0:
-            show_message_box("Information", "Transfer of Result", f"Transfer failed with status code: {tcd}.\n"
-                                                                  f"The transfer result already exist in SENAITE LIMS!")
+            show_message_box("Information", "Transfer of Result", f"Transfer failed with status code:"
+                                                                  f"{tcd}.\nEither the transfer result already exist"
+                                                                  f" or not registered in SENAITE LIMS!")
 
 
 # Transfer failed with status code: 401
 
 if __name__ == '__main__':
-    get_sample_path()
-    get_analysis_service()
+    # get_sample_path()
+    # get_analysis_service()
+    data = readJsonSenaiteSettings()
+    print(data)
