@@ -1,8 +1,8 @@
 import os
 import datetime
 import re
-import json
-import requests
+# import json
+# import requests
 from Middleware.senaite import client_uid_path, get_analysis_service, transfer_to_senaite, show_message_box
 from Middleware.sqlite_db import create_db_table, insert_record
 
@@ -10,8 +10,8 @@ from Middleware.sqlite_db import create_db_table, insert_record
 def nx500_parser_data(result_data):
     chem_result = {}
     dict_chem_result = []
-    dp_test = None
-    dp_test_result = None
+    # dp_test = None
+    # dp_test_result = None
     analysis_path = ''
 
     # getting the analysis services keywords from SENAITE
@@ -35,7 +35,7 @@ def nx500_parser_data(result_data):
         # remove all empty string
         records = [data for data in records if data]
 
-        # remove the lead two digit '02'
+        # remove the lead two digit 02
         records = [re.sub("^[0-9][0-9]", "", nd) for nd in records]
 
         # remove or strip leading char '='

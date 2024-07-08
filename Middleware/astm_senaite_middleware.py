@@ -2,8 +2,8 @@ import os
 import sys
 import json
 import threading
-import serial
 import sqlite3
+import serial
 from PySide6.QtCore import Slot, Signal, QObject, QThread
 from PySide6.QtWidgets import QMessageBox, QApplication, QWidget, QTableWidgetItem
 from Middleware.UI.ASTM_Middleware import Ui_astm_middleware

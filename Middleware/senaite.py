@@ -1,8 +1,8 @@
 import sys
 import os
-import requests
 import json
 import configparser
+import requests
 from PySide6.QtWidgets import QApplication, QMessageBox
 
 # load the cookie.ini file values
@@ -45,6 +45,7 @@ def process_settings_name(data_sn):
     stored_settings_name = data_sn
     # print(stored_settings_name)
 
+
 def readTextFileSettings():
     with open(text_filepath, 'r') as tf:
         text_data = tf.read()
@@ -52,7 +53,7 @@ def readTextFileSettings():
     return text_data.strip()
 
 
-def readJsonSenaiteSettings(setting_name):
+def read_json_senaite_settings(setting_name):
     filepath = os.path.join(os.path.dirname(__file__), "..", "settings.json")
 
     data_to_be_unpack = []
@@ -97,7 +98,7 @@ def senaite_api_url():
 
     # server, port, site, username, password = readJsonSenaiteSettings("")
     if stored_settings_name:
-        data_unpack = readJsonSenaiteSettings(stored_settings_name)
+        data_unpack = read_json_senaite_settings(stored_settings_name)
     server = None
     port = None
     site = None
@@ -116,7 +117,7 @@ def client_uid_path(sample_id):
 
         base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
         resp = requests.get(f'{senaite_url}/search', params={'id': sample_id},
-                            cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]})
+                            cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]}, timeout=15)
         analysis_path = resp.json()
         analysis_path = analysis_path['items']
         if resp.status_code == 200 and analysis_path:
@@ -149,15 +150,15 @@ def get_sample_path():
     try:
         resp = requests.get(f'{base_url}/AnalysisService/',
                             params={'limit': '50', 'review_state': 'active', 'complete': 'true'},
-                            cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]})
-        data = resp.json()
-        data = data["items"]
+                            cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]}, timeout=15)
+        data_sp = resp.json()
+        data_sp = data_sp["items"]
 
         analysis_services = {}
 
-        if resp.status_code == 200 and data:
-            for i in range(len(data)):
-                analysis_services.update({data[i]['ShortTitle']: data[i]['Keyword']})
+        if resp.status_code == 200 and data_sp:
+            for i in range(len(data_sp)):
+                analysis_services.update({data_sp[i]['ShortTitle']: data_sp[i]['Keyword']})
         else:
             raise Exception("Unexpected error occurred while connecting to SENAITE.\n Provide the correct host address")
 
@@ -178,14 +179,14 @@ def get_analysis_service():
         resp = requests.get(f'{lims_apu_url}/AnalysisService/',
                             params={'limit': '50', 'review_state': 'active', 'complete': 'true'},
                             cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]}, timeout=15)
-        data = resp.json()
-        data = data["items"]
+        data_as = resp.json()
+        data_as = data_as["items"]
 
         analysis_services = {}
 
-        if resp.status_code == 200 and data:
-            for i in range(len(data)):
-                analysis_services.update({data[i]['ShortTitle'].upper(): data[i]['Keyword']})
+        if resp.status_code == 200 and data_as:
+            for i in range(len(data_as)):
+                analysis_services.update({data_as[i]['ShortTitle'].upper(): data_as[i]['Keyword']})
         else:
             raise Exception("Unexpected error occurred while connecting to SENAITE.\n Provide the correct host address")
 
@@ -212,7 +213,8 @@ def transfer_to_senaite(analyzer_result):
 
         # print(analyzer_result[0])
         response = requests.post(f"{api_url_senaite}/update", headers=headers, json=analyzer_result[0],
-                                 cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]})
+                                 cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]},
+                                 timeout=15)
 
         # Handling the response from the server
         if response.status_code == requests.codes.ok:
@@ -231,7 +233,8 @@ def transfer_to_senaite(analyzer_result):
             # send the post request
             # json_str = json.dumps(result)
             response = requests.post(f"{api_url_senaite}/update", headers=headers, json=results,
-                                     cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]})
+                                     cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]},
+                                     timeout=15)
 
             # Handling the response from the server
             if response.status_code == requests.codes.ok:
@@ -254,5 +257,5 @@ def transfer_to_senaite(analyzer_result):
 if __name__ == '__main__':
     # get_sample_path()
     # get_analysis_service()
-    data = readJsonSenaiteSettings()
+    data = read_json_senaite_settings()
     print(data)

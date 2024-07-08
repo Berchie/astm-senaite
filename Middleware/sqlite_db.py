@@ -1,6 +1,5 @@
 import sqlite3
 import os
-from contextlib import closing
 from Middleware.senaite import show_message_box
 
 db_dir = os.path.join(os.path.dirname(__file__), "..", "result_astm.db")

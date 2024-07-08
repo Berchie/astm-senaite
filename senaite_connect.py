@@ -1,8 +1,8 @@
 import sys
 import os
-import requests
-import json
 import configparser
+import json
+import requests
 from PySide6.QtWidgets import QApplication, QMessageBox
 
 
@@ -32,7 +32,7 @@ def show_message_box(level, title, message):
         app.exit()
 
 
-def readJsonSenaiteSettings():
+def read_json_senaite_settings():
     filepath = os.path.join(os.path.dirname(__file__), "settings.json")
 
     data_to_be_unpack = []
@@ -84,7 +84,7 @@ API_BASE_URL = "/@@API/senaite/v1"
 
 
 def login_senaite_api():
-    data_unpack = readJsonSenaiteSettings()
+    data_unpack = read_json_senaite_settings()
 
     server = None
     port = None
@@ -95,10 +95,10 @@ def login_senaite_api():
     if data_unpack:
         server, port, site, username, password = data_unpack
 
-    SENAITE_API_URL = f"http://{server}:{port}/{site}/{API_BASE_URL}"
+    senaite_api_url = f"http://{server}:{port}/{site}/{API_BASE_URL}"
 
     try:
-        reqs = requests.post(f"{SENAITE_API_URL}/login", params={"__ac_name": username, "__ac_password": password})
+        reqs = requests.post(f"{senaite_api_url}/login", params={"__ac_name": username, "__ac_password": password}, timeout=15)
 
         # check if the response status is OK(200) and return data is not empty
         # before proceeding with writing the cookies to a file
@@ -133,8 +133,8 @@ def login_senaite_api():
             with open(config_file_path, 'w') as configfile:
                 config.write(configfile)
     except Exception as e:
-        # show_message_box("Critical", "Error", str(e))
-        print(str(e))
+        show_message_box("Critical", "Error", str(e))
+        #print(str(e))
 
 
 if __name__ == "__main__":
