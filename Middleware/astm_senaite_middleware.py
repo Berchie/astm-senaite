@@ -182,7 +182,6 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
         self.btn_start_listener.clicked.connect(self.startListener)
         self.btn_stop_listener.clicked.connect(self.stopListener)
 
-
     def load_sqlite_db_data(self):
 
         try:
@@ -253,8 +252,8 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
 
     @Slot(bytes)
     def onDataReceived(self, data):
-        self.buffer += data
-        self.astm_msg_textEdit.append(f"Data received: {data}")
+        self.buffer += data if isinstance(data, bytes) else data.encode()
+       # self.astm_msg_textEdit.append(f"Data received: {data}")
         self.processASTMMessages()
 
     def processASTMTransfer(self):
@@ -274,7 +273,7 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
                 self.astm_msg_textEdit.append("Preparing the ASTM Message for transfer to SENAITE LIMS")
                 data = parse_astm_data(self.astm_message)
                 if data:
-                    self.astm_msg_textEdit.append("Transferring the ASTM Message to SENAITE LIMS")
+                    self.astm_msg_textEdit.append("Transferring the ASTM Message to SENAITE LIMS\n")
                     transfer_to_senaite(data)
                 self.astm_message = ''
 

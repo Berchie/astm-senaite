@@ -43,7 +43,7 @@ def show_message_box(level, title, message):
 def process_settings_name(data_sn):
     global stored_settings_name
     stored_settings_name = data_sn
-
+    # print(stored_settings_name)
 
 def readTextFileSettings():
     with open(text_filepath, 'r') as tf:
