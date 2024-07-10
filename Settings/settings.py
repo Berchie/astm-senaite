@@ -9,11 +9,11 @@ from PySide6 import QtSerialPort as qts
 
 from Settings.UI.settings import Ui_dg_settings
 
-filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "settings.json"))
-text_filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "setting_names.txt"))
+# filepath = os.path.join(os.path.join(os.path.dirname(__file__), "data", "settings.json"))
+# text_filepath = os.path.join(os.path.join(os.path.dirname(__file__), "data", "setting_names.txt"))
 
 
-def com_ports():
+""" def com_ports():
     port_list = [""]
 
     for port in qts.QSerialPortInfo().availablePorts():
@@ -36,7 +36,7 @@ def read_json_settings(analyzer_name):
                     # settings_values = tuple(settings_values)
 
         return settings_values
-
+ """
 
 class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
     analyzer_settings_name = qtc.Signal(str)
@@ -63,7 +63,11 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
         self.upl_analyzer_settings = analyzer
         self.txt_sever_name_ip_address.setFocus()
 
-        self.port_names = com_ports()
+        # data files
+        self.filepath = self.find_data_file("settings.json")
+        self.text_filepath = self.find_data_file("setting_names.txt")
+
+        self.port_names = self.com_ports()
         # self.cb_comport.addItems(["", "COM1", "COM2"])
         self.cb_comport.addItems(self.port_names)
 
@@ -96,7 +100,7 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
         settings_values = {}
         analyzer_settings = {}
 
-        filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "settings.json"))
+        # filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "settings.json"))
 
         try:
 
@@ -137,23 +141,23 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
 
                 analyzer_settings.update({f"{self.analyzer}_{self.cb_comport.currentText().strip()}": settings_values})
 
-                if os.path.getsize(filepath) == 0:
-                    with open(filepath, 'w') as jsonfile:
+                if os.path.getsize(self.filepath) == 0:
+                    with open(self.filepath, 'w') as jsonfile:
                         json.dump(analyzer_settings, jsonfile, indent=4)
                 else:
-                    with open(filepath, 'r') as jsonFile:
+                    with open(self.filepath, 'r') as jsonFile:
                         data = json.load(jsonFile)
 
                     data.update(analyzer_settings)
 
-                    with open(filepath, 'w') as jsonfile:
+                    with open(self.filepath, 'w') as jsonfile:
                         json.dump(data, jsonfile, indent=4)
 
                 # emit signal
                 self.saved.emit(self.analyzer, self.comport)
                 self.analyzer_settings_name.emit(f"{self.analyzer}_{self.comport}")
 
-                #self.store_settings_name()
+                # self.store_settings_name()
 
                 qtw.QMessageBox.information(self, "Saving Settings", f"{self.analyzer} settings saved!")
 
@@ -202,10 +206,48 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
             qtw.QMessageBox.critical(self, "Error", str(cerr))
         except Exception as e:
             qtw.QMessageBox.critical(self, "Error", str(e))
+    
+    # using data files
+    # finding them using the code below
+    @staticmethod
+    def find_data_file(filename):
+        if getattr(sys, "frozen", False):
+            # The application is frozen
+            datadir = os.path.dirname(sys.executable)
+            return os.path.join(datadir, "data", filename)
+        else:
+            # The application is not frozen
+            # Change this bit to match where you store your data files:
+            datadir = os.path.dirname(__file__)
+            return os.path.join(datadir, "..", "data", filename)
 
+    @staticmethod
+    def com_ports():
+        port_list = [""]
+
+        for port in qts.QSerialPortInfo().availablePorts():
+            port_list.append(port.portName())
+
+        return port_list
+
+    def read_json_settings(self, analyzer_name):
+        settings_values = None
+
+        if os.path.getsize(self.filepath) > 0:
+            with open(self.filepath, 'r') as jsonFile:
+                data = json.load(jsonFile)
+
+            if data:
+                for analyzer in data:
+                    if analyzer == analyzer_name:
+                        settings_values = data[analyzer]
+                        # settings_values = tuple(settings_values)
+
+            return settings_values
+    
     def upload_settings(self):
         if self.upl_analyzer_settings:
-            uploaded_settings = read_json_settings(self.upl_analyzer_settings)
+            uploaded_settings = self.read_json_settings(self.upl_analyzer_settings)
 
             for key in uploaded_settings.keys():
 
@@ -239,7 +281,7 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
                         pass
 
     def store_settings_name(self):
-        with open(text_filepath, "a+") as textfile:
+        with open(self.text_filepath, "a+") as textfile:
             textfile.write(f"{self.analyzer}_{self.comport}\n")
 
 

@@ -11,71 +11,72 @@ from Settings.settings import SettingsForm
 from Middleware.fujifilm_chemistry_nx500 import nx500_parser_data
 from Middleware.process_astm_message import parse_astm_data
 from Middleware.senaite import transfer_to_senaite, process_settings_name
-from senaite_connect import login_senaite_api
+from Settings.senaite_connect import login_senaite_api
+
 
 # setting.json filepath
-filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "settings.json"))
-text_filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "setting_names.txt"))
+# filepath = os.path.join(os.path.join(os.path.dirname(__file__), "data", "settings.json"))
+# text_filepath = os.path.join(os.path.join(os.path.dirname(__file__), "data", "setting_names.txt"))
 
 # sqlit database path
-db_path = os.path.join(os.path.dirname(__file__), "..", "result_astm.db")
+# db_path = os.path.join(os.path.dirname(__file__), "data", "result_astm.db")
 
 
-def read_json_serial_setting(analyzer_name):
-    serial_config_values = None
-    comport_parameters = []
-    # comport_parameters_value = putting everything together to mdi window
-
-    bytesize = {"5": serial.FIVEBITS, "6": serial.SIXBITS, "7": serial.SEVENBITS, "8": serial.EIGHTBITS}
-    parity = {"None": serial.PARITY_NONE, "Even": serial.PARITY_EVEN, "Odd": serial.PARITY_ODD,
-              "Mark": serial.PARITY_MARK, "Space": serial.PARITY_SPACE}
-    stopbits = {"1": serial.STOPBITS_ONE, "1.5": serial.STOPBITS_ONE_POINT_FIVE, "2": serial.STOPBITS_TWO}
-
-    if os.path.getsize(filepath) > 0:
-        with open(filepath, 'r') as jsonfile:
-            data = json.load(jsonfile)
-
-        for analyzer in data:
-            if analyzer == analyzer_name:
-                serial_config_values = data[analyzer]
-
-        if serial_config_values:
-            for index in serial_config_values.keys():
-                if index == "port_name":
-                    comport_parameters.append(serial_config_values[index])
-
-                if index == "buadrate":
-                    comport_parameters.append(serial_config_values[index])
-
-                if index == "bytesize":
-                    comport_parameters.append(bytesize[serial_config_values[index]])
-
-                if index == "parity":
-                    comport_parameters.append(parity[serial_config_values[index]])
-
-                if index == "stopbits":
-                    comport_parameters.append(stopbits[serial_config_values[index]])
-
-                if index == "flowcontrol":
-                    if serial_config_values[index] == "None":
-                        xonxoff = False
-                        rtscts = False
-                        comport_parameters.append(xonxoff)
-                        comport_parameters.append(rtscts)
-                    elif serial_config_values[index] == "Software":
-                        xonxoff = True
-                        rtscts = False
-                        comport_parameters.append(xonxoff)
-                        comport_parameters.append(rtscts)
-                    else:
-                        xonxoff = False
-                        rtscts = True
-                        comport_parameters.append(xonxoff)
-                        comport_parameters.append(rtscts)
-
-        # comport_parameters_value = tuple(comport_parameters)
-
-        return comport_parameters
+# def read_json_serial_setting(analyzer_name):
+#     serial_config_values = None
+#     comport_parameters = []
+#     # comport_parameters_value = putting everything together to mdi window
+#
+#     bytesize = {"5": serial.FIVEBITS, "6": serial.SIXBITS, "7": serial.SEVENBITS, "8": serial.EIGHTBITS}
+#     parity = {"None": serial.PARITY_NONE, "Even": serial.PARITY_EVEN, "Odd": serial.PARITY_ODD,
+#               "Mark": serial.PARITY_MARK, "Space": serial.PARITY_SPACE}
+#     stopbits = {"1": serial.STOPBITS_ONE, "1.5": serial.STOPBITS_ONE_POINT_FIVE, "2": serial.STOPBITS_TWO}
+#
+#     if os.path.getsize(filepath) > 0:
+#         with open(filepath, 'r') as jsonfile:
+#             data = json.load(jsonfile)
+#
+#         for analyzer in data:
+#             if analyzer == analyzer_name:
+#                 serial_config_values = data[analyzer]
+#
+#         if serial_config_values:
+#             for index in serial_config_values.keys():
+#                 if index == "port_name":
+#                     comport_parameters.append(serial_config_values[index])
+#
+#                 if index == "buadrate":
+#                     comport_parameters.append(serial_config_values[index])
+#
+#                 if index == "bytesize":
+#                     comport_parameters.append(bytesize[serial_config_values[index]])
+#
+#                 if index == "parity":
+#                     comport_parameters.append(parity[serial_config_values[index]])
+#
+#                 if index == "stopbits":
+#                     comport_parameters.append(stopbits[serial_config_values[index]])
+#
+#                 if index == "flowcontrol":
+#                     if serial_config_values[index] == "None":
+#                         xonxoff = False
+#                         rtscts = False
+#                         comport_parameters.append(xonxoff)
+#                         comport_parameters.append(rtscts)
+#                     elif serial_config_values[index] == "Software":
+#                         xonxoff = True
+#                         rtscts = False
+#                         comport_parameters.append(xonxoff)
+#                         comport_parameters.append(rtscts)
+#                     else:
+#                         xonxoff = False
+#                         rtscts = True
+#                         comport_parameters.append(xonxoff)
+#                         comport_parameters.append(rtscts)
+#
+#         # comport_parameters_value = tuple(comport_parameters)
+#
+#         return comport_parameters
 
 
 class SerialReadWorker(QObject):
@@ -156,6 +157,11 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
         # port_parameter = read_json_serial_setting(self.analyzerName)
         # MiddlewareWindow.share_variable = self.windowTitle()
 
+        # find data file
+        self.filepath = self.find_data_file("settings.json")
+        self.text_filepath = self.find_data_file("setting_names.txt")
+        self.db_path = self.find_data_file("result_astm.db")
+
         # buffer
         self.buffer = b''
 
@@ -185,8 +191,8 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
     def load_sqlite_db_data(self):
 
         try:
-            if os.path.exists(db_path):
-                conn = sqlite3.connect(db_path)
+            if os.path.exists(self.db_path):
+                conn = sqlite3.connect(self.db_path)
                 cursor = conn.cursor()
                 cursor.execute("SELECT * FROM transactions")
 
@@ -235,7 +241,7 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
 
             process_settings_name(self.analyzerSettingsName)
 
-            MiddlewareWindow.store_settings_name(self.analyzerSettingsName)
+            self.store_settings_name()
 
             # login to senaite api
             login_senaite_api()
@@ -253,7 +259,7 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
     @Slot(bytes)
     def onDataReceived(self, data):
         self.buffer += data if isinstance(data, bytes) else data.encode()
-       # self.astm_msg_textEdit.append(f"Data received: {data}")
+        # self.astm_msg_textEdit.append(f"Data received: {data}")
         self.processASTMMessages()
 
     def processASTMTransfer(self):
@@ -343,6 +349,20 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
         QMessageBox.critical(self, "Error", message)
         self.astm_msg_textEdit.append(f"Error: {message}")
 
+    # using data files
+    # finding them using the code below
+    @staticmethod
+    def find_data_file(filename):
+        if getattr(sys, "frozen", False):
+            # The application is frozen
+            datadir = os.path.dirname(sys.executable)
+            return os.path.join(datadir, "data", filename)
+        else:
+            # The application is not frozen
+            # Change this bit to match where you store your data files:
+            datadir = os.path.dirname(__file__)
+        return os.path.join(datadir, "..", "data", filename)
+
     def read_json_serial_setting(self):
         serial_config_values = None
         comport_parameters = []
@@ -353,8 +373,8 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
                   "Mark": serial.PARITY_MARK, "Space": serial.PARITY_SPACE}
         stopbits = {"1": serial.STOPBITS_ONE, "1.5": serial.STOPBITS_ONE_POINT_FIVE, "2": serial.STOPBITS_TWO}
 
-        if os.path.getsize(filepath) > 0:
-            with open(filepath, 'r') as jsonfile:
+        if os.path.getsize(self.filepath) > 0:
+            with open(self.filepath, 'r') as jsonfile:
                 data = json.load(jsonfile)
 
             for analyzer_setting in data:
@@ -402,8 +422,8 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
     def delete_settings(self):
         new_settings = {}
 
-        if os.path.getsize(filepath) > 0:
-            with open(filepath, 'r') as jsonFile:
+        if os.path.getsize(self.filepath) > 0:
+            with open(self.filepath, 'r') as jsonFile:
                 data = json.load(jsonFile)
 
             if data:
@@ -413,16 +433,16 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
                     else:
                         new_settings.update({analyzer_setting: data[analyzer_setting]})
 
-                with open(filepath, "w") as jsonfile:
+                with open(self.filepath, "w") as jsonfile:
                     if new_settings:
                         json.dump(new_settings, jsonfile, indent=4)
                     else:
                         jsonfile.write("")
 
-    @staticmethod
-    def store_settings_name(name):
-        with open(text_filepath, "w") as textfile:
-            textfile.write(f"{name}")
+    # @staticmethod
+    def store_settings_name(self):
+        with open(self.text_filepath, "w") as textfile:
+            textfile.write(f"{self.analyzerSettingsName}")
 
     def stopListener(self):
         if self.uiWorker:

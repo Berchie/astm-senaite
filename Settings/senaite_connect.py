@@ -6,6 +6,19 @@ import requests
 from PySide6.QtWidgets import QApplication, QMessageBox
 
 
+# using data files (cx_freeze)
+# finding them using the code below
+def find_data_file(filename):
+        if getattr(sys, "frozen", False):
+            # The application is frozen
+            datadir = os.path.dirname(sys.executable)
+            return os.path.join(datadir, "data", filename)
+        else:
+            # The application is not frozen
+            # Change this bit to match where you store your data files:
+            datadir = os.path.dirname(__file__)
+        return os.path.join(datadir, "..","data", filename)
+
 def show_message_box(level, title, message):
     # create an instance of QApplication if not already present
     app = QApplication.instance()
@@ -33,7 +46,7 @@ def show_message_box(level, title, message):
 
 
 def read_json_senaite_settings():
-    filepath = os.path.join(os.path.dirname(__file__), "settings.json")
+    filepath = find_data_file("settings.json")
 
     data_to_be_unpack = []
     senaite_data = None
@@ -116,7 +129,7 @@ def login_senaite_api():
             # create instance of the configparser
             config = configparser.ConfigParser()
 
-            config_file_path = os.path.join(os.path.dirname(__file__), 'cookie.ini')
+            config_file_path = find_data_file('cookie.ini')
 
             # read the cookie.ini file
             config.read(config_file_path)

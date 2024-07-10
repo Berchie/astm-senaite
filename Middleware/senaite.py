@@ -5,11 +5,27 @@ import configparser
 import requests
 from PySide6.QtWidgets import QApplication, QMessageBox
 
-# load the cookie.ini file values
-cookie_config = configparser.ConfigParser()
-cookie_config.read(os.path.join(os.path.dirname(__file__), "..", "cookie.ini"))
 
-text_filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "setting_names.txt"))
+# using data files
+# finding them using the code below
+def find_data_file(filename):
+    if getattr(sys, "frozen", False):
+        # The application is frozen
+        datadir = os.path.dirname(sys.executable)
+        return os.path.join(datadir, "data", filename)
+    else:
+        # The application is not frozen
+        # Change this bit to match where you store your data files:
+        datadir = os.path.dirname(__file__)
+    return os.path.join(datadir, "..", "data", filename)
+
+
+# load the cookie.ini file values
+cookie_file = find_data_file("cookie.ini")
+cookie_config = configparser.ConfigParser()
+cookie_config.read(cookie_file)
+
+text_filepath = find_data_file("setting_names.txt")
 
 stored_settings_name = ''
 
@@ -54,7 +70,7 @@ def readTextFileSettings():
 
 
 def read_json_senaite_settings(setting_name):
-    filepath = os.path.join(os.path.dirname(__file__), "..", "settings.json")
+    filepath = find_data_file("settings.json")
 
     data_to_be_unpack = []
     senaite_data = None

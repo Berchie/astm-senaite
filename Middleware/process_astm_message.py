@@ -1,8 +1,24 @@
-import datetime
 import os
+import sys
+import datetime
 import re
 from Middleware.senaite import client_uid_path, get_analysis_service, transfer_to_senaite,show_message_box
 from Middleware.sqlite_db import insert_record, create_db_table
+
+
+
+# using data files
+# finding them using the code below
+def find_data_file(filename):
+    if getattr(sys, "frozen", False):
+        # The application is frozen
+        datadir = os.path.dirname(sys.executable)
+        return os.path.join(datadir, "data", filename)
+    else:
+        # The application is not frozen
+        # Change this bit to match where you store your data files:
+        datadir = os.path.dirname(__file__)
+    return os.path.join(datadir, "..", "data", filename)
 
 
 def parse_astm_data(astm_data):
@@ -25,7 +41,7 @@ def parse_astm_data(astm_data):
         take_first_date = 0
 
         # database file path
-        db_dir_path = f'{os.path.dirname(__file__)}/data/result_astm.db'
+        db_dir_path = find_data_file("result_astm.db")
 
         # variables for sqlite parameters
         t_date = datetime.datetime.now()
