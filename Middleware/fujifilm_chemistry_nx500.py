@@ -1,17 +1,32 @@
 import os
+import sys
 import datetime
 import re
-import json
-import requests
+# import json
+# import requests
 from Middleware.senaite import client_uid_path, get_analysis_service, transfer_to_senaite, show_message_box
 from Middleware.sqlite_db import create_db_table, insert_record
+
+
+# using data files
+# finding them using the code below
+def find_data_file(filename):
+    if getattr(sys, "frozen", False):
+        # The application is frozen
+        datadir = os.path.dirname(sys.executable)
+        return os.path.join(datadir, "data", filename)
+    else:
+        # The application is not frozen
+        # Change this bit to match where you store your data files:
+        datadir = os.path.dirname(__file__)
+    return os.path.join(datadir, "..", "data", filename)
 
 
 def nx500_parser_data(result_data):
     chem_result = {}
     dict_chem_result = []
-    dp_test = None
-    dp_test_result = None
+    # dp_test = None
+    # dp_test_result = None
     analysis_path = ''
 
     # getting the analysis services keywords from SENAITE
@@ -23,7 +38,7 @@ def nx500_parser_data(result_data):
     t_message = result_data
 
     # database file path
-    db_dir_path = os.path.join(os.path.dirname(__file__), "..", "result_astm.db")
+    db_dir_path = find_data_file("result_astm.db")
 
     try:
         # strip all extra tails
@@ -35,7 +50,7 @@ def nx500_parser_data(result_data):
         # remove all empty string
         records = [data for data in records if data]
 
-        # remove the lead two digit '02'
+        # remove the lead two digit 02
         records = [re.sub("^[0-9][0-9]", "", nd) for nd in records]
 
         # remove or strip leading char '='

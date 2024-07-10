@@ -5,19 +5,21 @@ import requests
 from PySide6 import QtCore as qtc
 from PySide6 import QtWidgets as qtw
 from PySide6 import QtSerialPort as qts
-from PySide6.QtCore import Qt
+
 
 from Settings.UI.settings import Ui_dg_settings
 
+# filepath = os.path.join(os.path.join(os.path.dirname(__file__), "data", "settings.json"))
+# text_filepath = os.path.join(os.path.join(os.path.dirname(__file__), "data", "setting_names.txt"))
 
-filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "settings.json"))
 
+""" def com_ports():
+    port_list = [""]
 
-def com_ports():
-    ports = [""]
-    for port in qts.QSerialPortInfo().portName():
-        ports.append(port)
-    return ports
+    for port in qts.QSerialPortInfo().availablePorts():
+        port_list.append(port.portName())
+
+    return port_list
 
 
 def read_json_settings(analyzer_name):
@@ -34,11 +36,12 @@ def read_json_settings(analyzer_name):
                     # settings_values = tuple(settings_values)
 
         return settings_values
-
+ """
 
 class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
-    #
-    saved = qtc.Signal(str)
+    analyzer_settings_name = qtc.Signal(str)
+    saved = qtc.Signal(str, str)
+    settings_name = None
 
     def __init__(self, analyzer):
         super().__init__()
@@ -60,7 +63,11 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
         self.upl_analyzer_settings = analyzer
         self.txt_sever_name_ip_address.setFocus()
 
-        self.port_names = com_ports()
+        # data files
+        self.filepath = self.find_data_file("settings.json")
+        self.text_filepath = self.find_data_file("setting_names.txt")
+
+        self.port_names = self.com_ports()
         # self.cb_comport.addItems(["", "COM1", "COM2"])
         self.cb_comport.addItems(self.port_names)
 
@@ -81,7 +88,8 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
         self.btnbx_reset_senaite_settings.clicked.connect(self.rest)
 
         # restore analyzer settings
-        self.btnbx_restore_analyzer_default_settings.button(qtw.QDialogButtonBox.StandardButton.RestoreDefaults).clicked.connect(self.restore)
+        self.btnbx_restore_analyzer_default_settings.button(
+            qtw.QDialogButtonBox.StandardButton.RestoreDefaults).clicked.connect(self.restore)
 
         # test senaite connection
         self.pb_test_lims.clicked.connect(self.test_senaite)
@@ -92,7 +100,7 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
         settings_values = {}
         analyzer_settings = {}
 
-        filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "settings.json"))
+        # filepath = os.path.join(os.path.join(os.path.dirname(__file__), "..", "settings.json"))
 
         try:
 
@@ -113,7 +121,8 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
             self.flow_control = self.cb_flow_control.currentText()
 
             if self.server == "" or self.port == "" or self.site == "" or self.username == "" or self.username == "" or self.password == "":
-                qtw.QMessageBox.information(self, "Settings-Caution", "Missing SENAITE LIMS information.\nPlease provide the information.")
+                qtw.QMessageBox.information(self, "Settings-Caution",
+                                            "Missing SENAITE LIMS information.\nPlease provide the information.")
             elif self.analyzer == "Select Analyzer":
                 qtw.QMessageBox.information(self, "Settings-Caution", "Please provide analyzer name.")
             else:
@@ -130,22 +139,25 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
                 settings_values.update({"stopbits": self.stopbits})
                 settings_values.update({"flowcontrol": self.flow_control})
 
-                analyzer_settings.update({self.analyzer: settings_values})
+                analyzer_settings.update({f"{self.analyzer}_{self.cb_comport.currentText().strip()}": settings_values})
 
-                if os.path.getsize(filepath) == 0:
-                    with open(filepath, 'w') as jsonfile:
+                if os.path.getsize(self.filepath) == 0:
+                    with open(self.filepath, 'w') as jsonfile:
                         json.dump(analyzer_settings, jsonfile, indent=4)
                 else:
-                    with open(filepath, 'r') as jsonFile:
+                    with open(self.filepath, 'r') as jsonFile:
                         data = json.load(jsonFile)
 
                     data.update(analyzer_settings)
 
-                    with open(filepath, 'w') as jsonfile:
+                    with open(self.filepath, 'w') as jsonfile:
                         json.dump(data, jsonfile, indent=4)
 
                 # emit signal
-                self.saved.emit(self.analyzer)
+                self.saved.emit(self.analyzer, self.comport)
+                self.analyzer_settings_name.emit(f"{self.analyzer}_{self.comport}")
+
+                # self.store_settings_name()
 
                 qtw.QMessageBox.information(self, "Saving Settings", f"{self.analyzer} settings saved!")
 
@@ -174,8 +186,9 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
     def test_senaite(self):
         try:
             senaite_url = f"{self.txt_sever_name_ip_address.text().strip()}:{self.txt_senaite_port.text().strip()}/{self.txt_site_id.text().strip()}"
-            resp = requests.post(f"http://{senaite_url}/@@API/senaite/v1/login", params={"__ac_name": self.txt_senaite_username.text().strip(),
-                                                                                         "__ac_password": self.txt_senaite_password.text().strip()})
+            resp = requests.post(f"http://{senaite_url}/@@API/senaite/v1/login",
+                                 params={"__ac_name": self.txt_senaite_username.text().strip(),
+                                         "__ac_password": self.txt_senaite_password.text().strip()})
 
             if resp.status_code == 200 and resp.json()["items"]:
                 self.msgBox.setText("Connection to SENAITE LIMS is successful!")
@@ -193,10 +206,48 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
             qtw.QMessageBox.critical(self, "Error", str(cerr))
         except Exception as e:
             qtw.QMessageBox.critical(self, "Error", str(e))
+    
+    # using data files
+    # finding them using the code below
+    @staticmethod
+    def find_data_file(filename):
+        if getattr(sys, "frozen", False):
+            # The application is frozen
+            datadir = os.path.dirname(sys.executable)
+            return os.path.join(datadir, "data", filename)
+        else:
+            # The application is not frozen
+            # Change this bit to match where you store your data files:
+            datadir = os.path.dirname(__file__)
+            return os.path.join(datadir, "..", "data", filename)
 
+    @staticmethod
+    def com_ports():
+        port_list = [""]
+
+        for port in qts.QSerialPortInfo().availablePorts():
+            port_list.append(port.portName())
+
+        return port_list
+
+    def read_json_settings(self, analyzer_name):
+        settings_values = None
+
+        if os.path.getsize(self.filepath) > 0:
+            with open(self.filepath, 'r') as jsonFile:
+                data = json.load(jsonFile)
+
+            if data:
+                for analyzer in data:
+                    if analyzer == analyzer_name:
+                        settings_values = data[analyzer]
+                        # settings_values = tuple(settings_values)
+
+            return settings_values
+    
     def upload_settings(self):
         if self.upl_analyzer_settings:
-            uploaded_settings = read_json_settings(self.upl_analyzer_settings)
+            uploaded_settings = self.read_json_settings(self.upl_analyzer_settings)
 
             for key in uploaded_settings.keys():
 
@@ -228,6 +279,10 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
                         self.cb_flow_control.setCurrentText(uploaded_settings[key])
                     case _:
                         pass
+
+    def store_settings_name(self):
+        with open(self.text_filepath, "a+") as textfile:
+            textfile.write(f"{self.analyzer}_{self.comport}\n")
 
 
 if __name__ == "__main__":

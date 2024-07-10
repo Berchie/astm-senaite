@@ -3,9 +3,9 @@ from functools import partial
 
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QMainWindow, QApplication, QMessageBox
-from PySide6.QtGui import QAction
-from MDI.UI.MDI_MainWindow import Ui_MDI_MainWindow
+# from PySide6.QtGui import QAction
 from Middleware.astm_senaite_middleware import MiddlewareWindow
+from MDI.UI.MDI_MainWindow import Ui_MDI_MainWindow
 
 
 class MainWindow(QMainWindow, Ui_MDI_MainWindow):
@@ -21,12 +21,12 @@ class MainWindow(QMainWindow, Ui_MDI_MainWindow):
         self.child_mdi_area.subWindowActivated.connect(self.update_menus)
 
         self.create_status_bar()
-        self.add_subwindows_menuWindow()
+        self.add_subwindows_menu_window()
 
         self.new_act.triggered.connect(self.new_middleware)
         self.exit_act.triggered.connect(self.exit_application)
-        self.close_window_act.triggered.connect(self.close_subWindow)
-        self.close_all_windows_act.triggered.connect(self.close_all_subWindow)
+        self.close_window_act.triggered.connect(self.close_sub_window)
+        self.close_all_windows_act.triggered.connect(self.close_all_sub_window)
         self.cascade_act.triggered.connect(self.cascade)
         self.tile_act.triggered.connect(self.tile)
         self.about_act.triggered.connect(self.about)
@@ -41,11 +41,11 @@ class MainWindow(QMainWindow, Ui_MDI_MainWindow):
         self.close()
 
     @Slot()
-    def close_subWindow(self):
+    def close_sub_window(self):
         self.child_mdi_area.closeActiveSubWindow()
 
     @Slot()
-    def close_all_subWindow(self):
+    def close_all_sub_window(self):
         self.child_mdi_area.closeAllSubWindows()
 
     @Slot()
@@ -66,7 +66,7 @@ class MainWindow(QMainWindow, Ui_MDI_MainWindow):
         # Analyzer - ASTM Middleware
         MainWindow.sequence_number = MainWindow.sequence_number + 1
         child = MiddlewareWindow()
-        child.setWindowTitle(f"Analyzer-ASTM Middleware{str(MainWindow.sequence_number)}")
+        child.setWindowTitle(f"Analyzer - ASTM Middleware{str(MainWindow.sequence_number)}")
         self.child_mdi_area.addSubWindow(child)
 
         return child
@@ -125,7 +125,7 @@ class MainWindow(QMainWindow, Ui_MDI_MainWindow):
             # action.triggered.connect(lambda checked, sw=subwindow: self.set_active_sub_window(sw))
             # self.menuWindow.addAction(action)
 
-    def add_subwindows_menuWindow(self):
+    def add_subwindows_menu_window(self):
         self.update_window_menu()
         self.menuWindow.aboutToShow.connect(self.update_window_menu)
 
@@ -135,6 +135,7 @@ class MainWindow(QMainWindow, Ui_MDI_MainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setStyle("Fusion")
 
     window = MainWindow()
     window.show()

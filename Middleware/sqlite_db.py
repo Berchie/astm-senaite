@@ -1,9 +1,25 @@
+import sys
 import sqlite3
 import os
-from contextlib import closing
 from Middleware.senaite import show_message_box
 
-db_dir = os.path.join(os.path.dirname(__file__), "..", "result_astm.db")
+
+
+# using data files
+# finding them using the code below
+def find_data_file(filename):
+    if getattr(sys, "frozen", False):
+        # The application is frozen
+        datadir = os.path.dirname(sys.executable)
+        return os.path.join(datadir, "data", filename)
+    else:
+        # The application is not frozen
+        # Change this bit to match where you store your data files:
+        datadir = os.path.dirname(__file__)
+    return os.path.join(datadir, "..", "data", filename)
+
+
+db_dir = find_data_file("result_astm.db")
 
 
 def create_db_table():

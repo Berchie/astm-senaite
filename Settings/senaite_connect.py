@@ -1,10 +1,23 @@
 import sys
 import os
-import requests
-import json
 import configparser
+import json
+import requests
 from PySide6.QtWidgets import QApplication, QMessageBox
 
+
+# using data files (cx_freeze)
+# finding them using the code below
+def find_data_file(filename):
+        if getattr(sys, "frozen", False):
+            # The application is frozen
+            datadir = os.path.dirname(sys.executable)
+            return os.path.join(datadir, "data", filename)
+        else:
+            # The application is not frozen
+            # Change this bit to match where you store your data files:
+            datadir = os.path.dirname(__file__)
+        return os.path.join(datadir, "..","data", filename)
 
 def show_message_box(level, title, message):
     # create an instance of QApplication if not already present
@@ -32,8 +45,8 @@ def show_message_box(level, title, message):
         app.exit()
 
 
-def readJsonSenaiteSettings():
-    filepath = os.path.join(os.path.dirname(__file__), "settings.json")
+def read_json_senaite_settings():
+    filepath = find_data_file("settings.json")
 
     data_to_be_unpack = []
     senaite_data = None
@@ -45,7 +58,7 @@ def readJsonSenaiteSettings():
 
         if json_data:
             for analyzer in json_data:
-                if count == 0:      # using count to get only the first element
+                if count == 0:  # using count to get only the first element
                     senaite_data = json_data[analyzer]
 
                 count += 1
@@ -69,21 +82,36 @@ def readJsonSenaiteSettings():
 # SENAITE.JSONAPI route
 API_BASE_URL = "/@@API/senaite/v1"
 
-data_unpack = readJsonSenaiteSettings()
-
-server = None
-port = None
-site = None
-
-if data_unpack:
-    server, port, site, username, password = data_unpack
-
-SENAITE_API_URL = f"http://{server}:{port}/{site}/{API_BASE_URL}"
+# data_unpack = readJsonSenaiteSettings()
+#
+# server = None
+# port = None
+# site = None
+# username = None
+# password = None
+#
+# if data_unpack:
+#     server, port, site, username, password = data_unpack
+#
+# SENAITE_API_URL = f"http://{server}:{port}/{site}/{API_BASE_URL}"
 
 
 def login_senaite_api():
+    data_unpack = read_json_senaite_settings()
+
+    server = None
+    port = None
+    site = None
+    username = None
+    password = None
+
+    if data_unpack:
+        server, port, site, username, password = data_unpack
+
+    senaite_api_url = f"http://{server}:{port}/{site}/{API_BASE_URL}"
+
     try:
-        reqs = requests.post(f"{SENAITE_API_URL}/login", params={"__ac_name": username, "__ac_password": password})
+        reqs = requests.post(f"{senaite_api_url}/login", params={"__ac_name": username, "__ac_password": password}, timeout=15)
 
         # check if the response status is OK(200) and return data is not empty
         # before proceeding with writing the cookies to a file
@@ -101,7 +129,7 @@ def login_senaite_api():
             # create instance of the configparser
             config = configparser.ConfigParser()
 
-            config_file_path = os.path.join(os.path.dirname(__file__), 'cookie.ini')
+            config_file_path = find_data_file('cookie.ini')
 
             # read the cookie.ini file
             config.read(config_file_path)
@@ -119,6 +147,7 @@ def login_senaite_api():
                 config.write(configfile)
     except Exception as e:
         show_message_box("Critical", "Error", str(e))
+        #print(str(e))
 
 
 if __name__ == "__main__":
