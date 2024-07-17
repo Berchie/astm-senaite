@@ -142,6 +142,7 @@ def client_uid_path(sample_id):
             # print("Sample ID doesn't exist in SENAITE!")
             show_message_box("Information", "SENAITE Error", "Sample ID doesn't exist in SENAITE!")
 
+        # print(client_uid)
     # except requests.exceptions.ConnectionError as ce:
     #     print('Connection error:', ce)
     # # Handle Timeout
@@ -175,8 +176,10 @@ def get_sample_path():
         if resp.status_code == 200 and data_sp:
             for i in range(len(data_sp)):
                 analysis_services.update({data_sp[i]['ShortTitle']: data_sp[i]['Keyword']})
-        else:
-            raise Exception("Unexpected error occurred while connecting to SENAITE.\n Provide the correct host address")
+        # else:
+        #     show_message_box("Critical", "SENAITE Error", "Unexpected error occurred while connecting "
+        #                                                  "to SENAITE.\nProvide the correct host address")
+        # raise Exception("Unexpected error occurred while connecting to SENAITE.\n Provide the correct host address")
 
         print(analysis_services)
         # return analysis_services
@@ -188,12 +191,13 @@ def get_sample_path():
 def get_analysis_service():
     # ask the user for the senaite api url
     # base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
-    # af_url = "http://10.5.50.43:8091/agogo-test/@@API/senaite/v1"
+    # af_url = "http://192.168.1.102:8099/demolims/@@API/senaite/v1"
     lims_apu_url = senaite_api_url()
+    # lims_apu_url = af_url
 
     try:
         resp = requests.get(f'{lims_apu_url}/AnalysisService/',
-                            params={'limit': '50', 'review_state': 'active', 'complete': 'true'},
+                            params={'limit': '100', 'review_state': 'active', 'complete': 'true'},
                             cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]}, timeout=15)
         data_as = resp.json()
         data_as = data_as["items"]
@@ -203,8 +207,9 @@ def get_analysis_service():
         if resp.status_code == 200 and data_as:
             for i in range(len(data_as)):
                 analysis_services.update({data_as[i]['ShortTitle'].upper(): data_as[i]['Keyword']})
-        else:
-            raise Exception("Unexpected error occurred while connecting to SENAITE.\n Provide the correct host address")
+        # else:
+        #     show_message_box("Critical", "SENAITE Error","Unexpected error occurred while connecting to" 
+        #                      "SENAITE.\n Provide the correct host address")
 
         # print(json.dumps(analysis_services, indent=4))
         return analysis_services
@@ -217,6 +222,8 @@ def get_analysis_service():
 def transfer_to_senaite(analyzer_result):
     transfer_count = 0
     transfer_err = 0
+
+    # print(analyzer_result)
 
     # url of SENAITE to update analysis
     # senaite_url = f"http://10.5.50.44:8081/assinfoso-test/@@API/senaite/v1/update"
@@ -273,5 +280,5 @@ def transfer_to_senaite(analyzer_result):
 if __name__ == '__main__':
     # get_sample_path()
     # get_analysis_service()
-    data = read_json_senaite_settings()
+    data = get_analysis_service()
     print(data)
