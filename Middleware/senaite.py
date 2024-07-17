@@ -176,9 +176,9 @@ def get_sample_path():
         if resp.status_code == 200 and data_sp:
             for i in range(len(data_sp)):
                 analysis_services.update({data_sp[i]['ShortTitle']: data_sp[i]['Keyword']})
-        else:
-            show_message_box("Critical", "SENAITE Error", "Unexpected error occurred while connecting "
-                                                          "to SENAITE.\nProvide the correct host address")
+        # else:
+        #     show_message_box("Critical", "SENAITE Error", "Unexpected error occurred while connecting "
+        #                                                  "to SENAITE.\nProvide the correct host address")
         # raise Exception("Unexpected error occurred while connecting to SENAITE.\n Provide the correct host address")
 
         print(analysis_services)
@@ -207,14 +207,14 @@ def get_analysis_service():
         if resp.status_code == 200 and data_as:
             for i in range(len(data_as)):
                 analysis_services.update({data_as[i]['ShortTitle'].upper(): data_as[i]['Keyword']})
-        else:
-            raise Exception("Unexpected error occurred while connecting to SENAITE.\n Provide the correct host address")
+        # else:
+        #     show_message_box("Critical", "SENAITE Error","Unexpected error occurred while connecting to" 
+        #                      "SENAITE.\n Provide the correct host address")
 
         # print(json.dumps(analysis_services, indent=4))
         return analysis_services
 
     except Exception as e:
-        print(str(e))
         show_message_box("Critical", "Error", str(e))
 
 
@@ -222,6 +222,8 @@ def get_analysis_service():
 def transfer_to_senaite(analyzer_result):
     transfer_count = 0
     transfer_err = 0
+
+    # print(analyzer_result)
 
     # url of SENAITE to update analysis
     # senaite_url = f"http://10.5.50.44:8081/assinfoso-test/@@API/senaite/v1/update"
