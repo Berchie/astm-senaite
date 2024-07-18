@@ -128,6 +128,7 @@ def senaite_api_url():
 
 def client_uid_path(sample_id):
     senaite_url = senaite_api_url()
+    # senaite_url = f"http://192.168.1.102:8099/demolims/@@API/senaite/v1"
     try:
         client_uid = ''
 
@@ -163,6 +164,7 @@ def get_sample_path():
     # ask the user for the senaite api url
     # base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
     base_url = senaite_api_url()
+    # base_url = f"http://192.168.1.102:8099/demolims/@@API/senaite/v1/"
 
     try:
         resp = requests.get(f'{base_url}/AnalysisService/',
@@ -191,9 +193,9 @@ def get_sample_path():
 def get_analysis_service():
     # ask the user for the senaite api url
     # base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
-    af_url = "http://192.168.1.102:8099/demolims/@@API/senaite/v1"
-    # lims_apu_url = senaite_api_url()
-    lims_apu_url = af_url
+    # af_url = "http://192.168.1.102:8099/demolims/@@API/senaite/v1"
+    lims_apu_url = senaite_api_url()
+    # lims_apu_url = af_url
 
     try:
         resp = requests.get(f'{lims_apu_url}/AnalysisService/',
@@ -207,9 +209,9 @@ def get_analysis_service():
         if resp.status_code == 200 and data_as:
             for i in range(len(data_as)):
                 analysis_services.update({data_as[i]['ShortTitle'].upper(): data_as[i]['Keyword']})
-        else:
-            show_message_box("Critical", "SENAITE Error", "Unexpected error occurred while connecting to"
-                                                          "SENAITE.\n Provide the correct host address")
+        # else:
+        #     show_message_box("Critical", "SENAITE Error", "Unexpected error occurred while connecting to"
+        #                                                   "SENAITE.\n Provide the correct host address")
 
         # print(json.dumps(analysis_services, indent=4))
         # return analysis_services
@@ -224,15 +226,17 @@ def get_analysis_service():
 def transfer_to_senaite(analyzer_result):
     transfer_count = 0
     transfer_err = 0
+    tcd = ''
 
     # print(analyzer_result)
 
     # url of SENAITE to update analysis
     # senaite_url = f"http://10.5.50.44:8081/assinfoso-test/@@API/senaite/v1/update"
-    # senaite_url = f"http://localhost:8080/senaite/@@API/senaite/v1/update"
+    # senaite_url = f"http://192.168.1.102:8099/demolims/@@API/senaite/v1/update"
     # Specify the appropriate header for the POST request
     headers = {'Content-type': 'application/json'}
     api_url_senaite = senaite_api_url()
+    # api_url_senaite = senaite_url
 
     if len(analyzer_result) == 1:
 
@@ -254,7 +258,6 @@ def transfer_to_senaite(analyzer_result):
             # print('Request failed with status code:', response.status_code)
 
     else:
-        tcd = ''
         for results in analyzer_result:
             # send the post request
             # json_str = json.dumps(result)
@@ -267,16 +270,19 @@ def transfer_to_senaite(analyzer_result):
                 transfer_count += 1  # to count the successful transfer
                 # print('Transfer of result was successful')
                 # print(response.json())
-                return "SENAITE: Transfer of result was successful"
+
             else:
                 transfer_err += 1
                 # print('Transfer failed with status code:', response.status_code)
                 tcd = response.status_code
 
-        if transfer_err > 0:
-            show_message_box("Information", "Transfer of Result", f"Transfer failed with status code:"
-                                                                  f"{tcd}.\nEither the transfer result already exist"
-                                                                  f" or not registered in SENAITE LIMS!")
+    if transfer_err > 0:
+        show_message_box("Information", "Transfer of Result", f"Transfer failed with status code:"
+                                                              f"{tcd}.\nEither the transfer result already exist"
+                                                              f" or not registered in SENAITE LIMS!")
+
+    if transfer_count > 0:
+        print("SENAITE: Transfer of result was successful")
 
 
 # Transfer failed with status code: 401

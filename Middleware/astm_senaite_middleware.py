@@ -272,8 +272,8 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
                 data = nx500_parser_data(self.astm_message)
                 if data:
                     self.astm_msg_textEdit.append("Transferring the ASTM Message to SENAITE LIMS")
-                    resp = transfer_to_senaite(data)
-                    self.astm_msg_textEdit.append(resp)
+                    transfer_to_senaite(data)
+                    # self.astm_msg_textEdit.append(resp)
                 self.astm_message = ''
         else:
             if self.astm_message:

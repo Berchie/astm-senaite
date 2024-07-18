@@ -2,9 +2,8 @@ import os
 import sys
 import datetime
 import re
-from Middleware.senaite import client_uid_path, get_analysis_service, transfer_to_senaite,show_message_box
+from Middleware.senaite import client_uid_path, get_analysis_service, transfer_to_senaite, show_message_box
 from Middleware.sqlite_db import insert_record, create_db_table
-
 
 
 # using data files
@@ -116,9 +115,9 @@ def parse_astm_data(astm_data):
                             results.clear()
                             # date_performed = yyyy-mm-dd hh:mm
                             date_performed = f"{fields[8][0:12][0:4]}-{fields[8][0:12][4:6]}-{fields[8][0:12][6:8]} {fields[8][0:12][8:10]}:{fields[8][0:12][10:12]}"
-                            results.update({"path": analysis_test_path})
-                            results.update({"ClientOrderNumber": date_performed})  # getClientOrderNumber
-                            result_dict.append(results.copy())
+                            # results.update({"path": analysis_test_path})
+                            # results.update({"ClientOrderNumber": date_performed})  # getClientOrderNumber
+                            # result_dict.append(results.copy())
                             # print(date_performed)
 
                 case 'BectonDickinson':  # BD Bactec FX40
@@ -157,9 +156,9 @@ def parse_astm_data(astm_data):
                             results.clear()
                             # date_performed = yyyy-mm-dd hh:mm
                             date_performed = f"{fields[5][0:12][0:4]}-{fields[5][0:12][4:6]}-{fields[5][0:12][6:8]} {fields[5][0:12][8:10]}:{fields[5][0:12][10:12]}"
-                            results.update({"path": analysis_test_path})
-                            results.update({"ClientOrderNumber": date_performed})  # getClientOrderNumber
-                            result_dict.append(results.copy())
+                            # results.update({"path": analysis_test_path})
+                            # results.update({"ClientOrderNumber": date_performed})  # getClientOrderNumber
+                            # result_dict.append(results.copy())
 
                     elif record_type == 'R':
                         # get the keywords from senaite and use it as the key for the result
@@ -171,6 +170,12 @@ def parse_astm_data(astm_data):
                             result_dict.append(results.copy())
 
             results.clear()
+
+        # date of test was performed
+        if date_performed:
+            results.update({"path": analysis_test_path})
+            results.update({"ClientOrderNumber": date_performed})  # getClientOrderNumber
+            result_dict.append(results.copy())
 
         # insert record into the sqlite database
         t_message = t_message
@@ -198,4 +203,4 @@ def astm_parser(textfile):
 
 if __name__ == '__main__':
     # astm_parser('../cobas_output_file.txt')
-    astm_parser('../astm_messages.txt')
+    astm_parser('../demo_xn350.text')
