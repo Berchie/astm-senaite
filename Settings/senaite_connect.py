@@ -9,15 +9,16 @@ from PySide6.QtWidgets import QApplication, QMessageBox
 # using data files (cx_freeze)
 # finding them using the code below
 def find_data_file(filename):
-        if getattr(sys, "frozen", False):
-            # The application is frozen
-            datadir = os.path.dirname(sys.executable)
-            return os.path.join(datadir, "data", filename)
-        else:
-            # The application is not frozen
-            # Change this bit to match where you store your data files:
-            datadir = os.path.dirname(__file__)
-        return os.path.join(datadir, "..","data", filename)
+    if getattr(sys, "frozen", False):
+        # The application is frozen
+        datadir = os.path.dirname(sys.executable)
+        return os.path.join(datadir, "data", filename)
+    else:
+        # The application is not frozen
+        # Change this bit to match where you store your data files:
+        datadir = os.path.dirname(__file__)
+    return os.path.join(datadir, "..", "data", filename)
+
 
 def show_message_box(level, title, message):
     # create an instance of QApplication if not already present
@@ -81,6 +82,7 @@ def read_json_senaite_settings():
 
 # SENAITE.JSONAPI route
 API_BASE_URL = "/@@API/senaite/v1"
+
 
 # data_unpack = readJsonSenaiteSettings()
 #

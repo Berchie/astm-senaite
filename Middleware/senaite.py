@@ -191,9 +191,9 @@ def get_sample_path():
 def get_analysis_service():
     # ask the user for the senaite api url
     # base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
-    # af_url = "http://192.168.1.102:8099/demolims/@@API/senaite/v1"
-    lims_apu_url = senaite_api_url()
-    # lims_apu_url = af_url
+    af_url = "http://192.168.1.102:8099/demolims/@@API/senaite/v1"
+    # lims_apu_url = senaite_api_url()
+    lims_apu_url = af_url
 
     try:
         resp = requests.get(f'{lims_apu_url}/AnalysisService/',
@@ -207,15 +207,17 @@ def get_analysis_service():
         if resp.status_code == 200 and data_as:
             for i in range(len(data_as)):
                 analysis_services.update({data_as[i]['ShortTitle'].upper(): data_as[i]['Keyword']})
-        # else:
-        #     show_message_box("Critical", "SENAITE Error","Unexpected error occurred while connecting to" 
-        #                      "SENAITE.\n Provide the correct host address")
+        else:
+            show_message_box("Critical", "SENAITE Error", "Unexpected error occurred while connecting to"
+                                                          "SENAITE.\n Provide the correct host address")
 
         # print(json.dumps(analysis_services, indent=4))
-        return analysis_services
+        # return analysis_services
 
     except Exception as e:
         show_message_box("Critical", "Error", str(e))
+    else:
+        return analysis_services
 
 
 # transfer the analyzer results to update SENAITE
@@ -244,6 +246,7 @@ def transfer_to_senaite(analyzer_result):
             pass
             # print('Transfer was successful')
             # print(response.json())
+            return "SENAITE: Transfer of result was successful"
         else:
             show_message_box("Information", "Transfer of Result",
                              f"Transfer failed with status code: {response.status_code}.\n"
@@ -264,6 +267,7 @@ def transfer_to_senaite(analyzer_result):
                 transfer_count += 1  # to count the successful transfer
                 # print('Transfer of result was successful')
                 # print(response.json())
+                return "SENAITE: Transfer of result was successful"
             else:
                 transfer_err += 1
                 # print('Transfer failed with status code:', response.status_code)
