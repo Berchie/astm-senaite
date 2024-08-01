@@ -1,12 +1,11 @@
 PySide6>=6.7.2
-pip>=24.1.2
 wheel>=0.43.0
-setuptools>=70.3.0
+setuptools==70.3.0
 pyserial>=3.5
 certifi>=2024.7.4
 shiboken6>=6.7.2
 urllib3>=2.2.2
 idna>=3.7
-cx_Freeze>=7.1.1
-lief>=0.14.1
+# cx_Freeze>=7.1.1
+# lief==0.14.1
 requests>=2.32.3

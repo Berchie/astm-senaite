@@ -5,3 +5,5 @@ __pycache__/
 venv
 build
 .DS_Store
+mdi_main_window.build
+mdi_main_window.dist

@@ -3,14 +3,14 @@ from cx_Freeze import setup, Executable
 # Dependencies are automatically detected, but they might need fine-tuning.
 build_exe_options = {
     "excludes": ["tkinter", "unittest", "email"],
-    "zip_include_packages": ["encodings", "PySide6", "shiboken6"],
+    "zip_include_packages": ["encodings", "shiboken6"],   # "encodings", "PySide6", "shiboken6"
     "includes": [],
     "include_files": ["Icons", "data"],
 }
 
 setup(
     name="ASMtoSENAITE",
-    version="0.1.1",
+    version="0.1.2",
     description="Middleware transferring ASTM Message to SENAITE LIMS",
     author="Berchie Agyemang Nti",
     options={"build_exe": build_exe_options},

@@ -20,6 +20,9 @@ def find_data_file(filename):
     return os.path.join(datadir, "..", "data", filename)
 
 
+basedir = os.path.dirname(__file__)
+
+
 def show_message_box(level, title, message):
     # create an instance of QApplication if not already present
     app = QApplication.instance()
@@ -47,7 +50,8 @@ def show_message_box(level, title, message):
 
 
 def read_json_senaite_settings():
-    filepath = find_data_file("settings.json")
+    # filepath = find_data_file("settings.json")
+    filepath = os.path.join(basedir, "..", "data", "settings.json")
 
     data_to_be_unpack = []
     senaite_data = None
@@ -113,7 +117,8 @@ def login_senaite_api():
     senaite_api_url = f"http://{server}:{port}/{site}/{API_BASE_URL}"
 
     try:
-        reqs = requests.post(f"{senaite_api_url}/login", params={"__ac_name": username, "__ac_password": password}, timeout=15)
+        reqs = requests.post(f"{senaite_api_url}/login", params={"__ac_name": username, "__ac_password": password},
+                             timeout=15)
 
         # check if the response status is OK(200) and return data is not empty
         # before proceeding with writing the cookies to a file
@@ -131,7 +136,8 @@ def login_senaite_api():
             # create instance of the configparser
             config = configparser.ConfigParser()
 
-            config_file_path = find_data_file('cookie.ini')
+            # config_file_path = find_data_file('cookie.ini')
+            config_file_path = os.path.join(basedir, "..", "data", "cookie.ini")
 
             # read the cookie.ini file
             config.read(config_file_path)

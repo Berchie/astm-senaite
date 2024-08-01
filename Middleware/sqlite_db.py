@@ -4,7 +4,6 @@ import os
 from Middleware.senaite import show_message_box
 
 
-
 # using data files
 # finding them using the code below
 def find_data_file(filename):
@@ -19,7 +18,9 @@ def find_data_file(filename):
     return os.path.join(datadir, "..", "data", filename)
 
 
-db_dir = find_data_file("result_astm.db")
+basedir = os.path.dirname(__file__)
+# db_dir = find_data_file("result_astm.db")
+db_dir = os.path.join(basedir, "..", "data", "result_astm.db")
 
 
 def create_db_table():

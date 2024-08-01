@@ -20,9 +20,13 @@ def find_data_file(filename):
     return os.path.join(datadir, "..", "data", filename)
 
 
+basedir = os.path.dirname(__file__)
+
+
 def parse_astm_data(astm_data):
     try:
         records = astm_data.split('\n')
+        # print(records)
 
         data = {"patients": []}
         results = {}
@@ -40,7 +44,8 @@ def parse_astm_data(astm_data):
         take_first_date = 0
 
         # database file path
-        db_dir_path = find_data_file("result_astm.db")
+        # db_dir_path = find_data_file("result_astm.db")
+        db_dir_path = os.path.join(basedir, "..", "data", "result_astm.db")
 
         # variables for sqlite parameters
         t_date = datetime.datetime.now()
@@ -98,6 +103,7 @@ def parse_astm_data(astm_data):
 
                     elif record_type == 'R':
                         # get the keywords from senaite and use it as the key for the result
+                        # print(analysis_services.keys())
                         if fields[2] in analysis_services.keys():
                             keyword_ = analysis_services[fields[2]]
                             path_key = f'{fbc_path}/{keyword_}'
@@ -139,7 +145,7 @@ def parse_astm_data(astm_data):
                         results.update({"path": cs_path_value})
                         results.update({"Result": cs_result})
                         results.update({"transition": "submit"})
-                        result_dict.append(results)
+                        result_dict.append(results.copy())
 
                 case _:  # cobass c111  chemistry analyzer
                     if record_type == 'O':
@@ -202,5 +208,5 @@ def astm_parser(textfile):
 
 
 if __name__ == '__main__':
-    # astm_parser('../cobas_output_file.txt')
-    astm_parser('../demo_xn350.text')
+    astm_parser('../astm_messages.txt')
+    # astm_parser('../demo_xn350.text')

@@ -10,16 +10,19 @@ from Middleware.sqlite_db import create_db_table, insert_record
 
 # using data files
 # finding them using the code below
-def find_data_file(filename):
-    if getattr(sys, "frozen", False):
-        # The application is frozen
-        datadir = os.path.dirname(sys.executable)
-        return os.path.join(datadir, "data", filename)
-    else:
-        # The application is not frozen
-        # Change this bit to match where you store your data files:
-        datadir = os.path.dirname(__file__)
-    return os.path.join(datadir, "..", "data", filename)
+# def find_data_file(filename):
+#     if getattr(sys, "frozen", False):
+#         # The application is frozen
+#         datadir = os.path.dirname(sys.executable)
+#         return os.path.join(datadir, "data", filename)
+#     else:
+#         # The application is not frozen
+#         # Change this bit to match where you store your data files:
+#         datadir = os.path.dirname(__file__)
+#     return os.path.join(datadir, "..", "data", filename)
+
+
+basedir = os.path.dirname(__file__)
 
 
 def nx500_parser_data(result_data):
@@ -38,7 +41,8 @@ def nx500_parser_data(result_data):
     t_message = result_data
 
     # database file path
-    db_dir_path = find_data_file("result_astm.db")
+    # db_dir_path = find_data_file("result_astm.db")
+    db_dir_path = os.path.join(basedir, "..", "data", "result_astm.db")
 
     try:
         # strip all extra tails

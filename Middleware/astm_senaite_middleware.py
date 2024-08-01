@@ -268,7 +268,7 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
         # passing the message through a parser to process the message to transfer to senaite lims
         if self.analyzerName == "DRI-CHEM NX500":
             if self.astm_message:
-                self.astm_msg_textEdit.append("Preparing the ASTM Message for transfer to SENAITE LIMS")
+                self.astm_msg_textEdit.append("\nPreparing the ASTM Message for transfer to SENAITE LIMS")
                 data = nx500_parser_data(self.astm_message)
                 if data:
                     self.astm_msg_textEdit.append("Transferring the ASTM Message to SENAITE LIMS")
@@ -277,7 +277,7 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
                 self.astm_message = ''
         else:
             if self.astm_message:
-                self.astm_msg_textEdit.append("Preparing the ASTM Message for transfer to SENAITE LIMS")
+                self.astm_msg_textEdit.append("\nPreparing the ASTM Message for transfer to SENAITE LIMS")
                 data = parse_astm_data(self.astm_message)
                 if data:
                     self.astm_msg_textEdit.append("Transferring the ASTM Message to SENAITE LIMS\n")
@@ -316,10 +316,10 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
                 if end_block_pos != -1:
                     message_block = self.buffer[stx_pos + 1:end_block_pos]
                     self.buffer = self.buffer[end_block_pos + 1:]
-                    self.astm_message += message_block.decode()
-                    self.astm_msg_textEdit.append(f"Received block: {message_block.decode()}")
+                    self.astm_message += f"{message_block.decode()}\n"
+                    self.astm_msg_textEdit.append(f"Received: {message_block.decode()}")
                     self.uiWorker.write_to_port(ACK)
-                    self.astm_msg_textEdit.append("Block ACK sent.")
+                    self.astm_msg_textEdit.append("Received Data ACK sent.")
                     continue
                 else:
                     break
@@ -329,7 +329,10 @@ class MiddlewareWindow(QWidget, Ui_astm_middleware):
                 self.buffer = self.buffer[eot_pos + 1:]
                 self.astm_msg_textEdit.append("EOT received. Transmission complete.")
                 self.uiWorker.write_to_port(ACK)
-                self.astm_msg_textEdit.append("EOT ACK sent.")
+                self.astm_msg_textEdit.append("EOT ACK sent.\n")
+                self.astm_msg_textEdit.append("Fully Received ASTM Message below")
+                self.astm_msg_textEdit.append("-------------------------------------------")
+                self.astm_msg_textEdit.append(self.astm_message)
                 self.processASTMTransfer()
                 break
 
