@@ -20,12 +20,16 @@ def find_data_file(filename):
     return os.path.join(datadir, "..", "data", filename)
 
 
+basedir = os.path.dirname(__file__)
+
 # load the cookie.ini file values
-cookie_file = find_data_file("cookie.ini")
+# cookie_file = find_data_file("cookie.ini")
+cookie_file = os.path.join(basedir, "..", "data", "cookie.ini")
 cookie_config = configparser.ConfigParser()
 cookie_config.read(cookie_file)
 
-text_filepath = find_data_file("setting_names.txt")
+# text_filepath = find_data_file("setting_names.txt")
+text_filepath = os.path.join(basedir, "..", "data", "settings_names.txt")
 
 stored_settings_name = ''
 
@@ -128,6 +132,7 @@ def senaite_api_url():
 
 def client_uid_path(sample_id):
     senaite_url = senaite_api_url()
+    # senaite_url = f"http://10.10.23.17:8080/senaite/@@API/senaite/v1"
     try:
         client_uid = ''
 
@@ -163,6 +168,7 @@ def get_sample_path():
     # ask the user for the senaite api url
     # base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
     base_url = senaite_api_url()
+    # base_url = f"http://10.10.23.17:8080/senaite/@@API/senaite/v1"
 
     try:
         resp = requests.get(f'{base_url}/AnalysisService/',
@@ -189,16 +195,20 @@ def get_sample_path():
 
 # function to return the path of the sample from SENAITE
 def get_analysis_service():
+    _cookie_file = os.path.join(basedir, "..", "data", "cookie.ini")
+    _cookie_config = configparser.ConfigParser()
+    _cookie_config.read(cookie_file)
+
     # ask the user for the senaite api url
     # base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
-    # af_url = "http://192.168.1.102:8099/demolims/@@API/senaite/v1"
+    af_url = "http://10.10.23.17:8080/senaite/@@API/senaite/v1"
     lims_apu_url = senaite_api_url()
     # lims_apu_url = af_url
 
     try:
         resp = requests.get(f'{lims_apu_url}/AnalysisService/',
-                            params={'limit': '100', 'review_state': 'active', 'complete': 'true'},
-                            cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]}, timeout=15)
+                            params={'limit': '50', 'review_state': 'active', 'complete': 'true'},
+                            cookies={_cookie_config["Cookie"]["name"]: _cookie_config["Cookie"]["value"]}, timeout=15)
         data_as = resp.json()
         data_as = data_as["items"]
 
@@ -208,55 +218,65 @@ def get_analysis_service():
             for i in range(len(data_as)):
                 analysis_services.update({data_as[i]['ShortTitle'].upper(): data_as[i]['Keyword']})
         # else:
-        #     show_message_box("Critical", "SENAITE Error","Unexpected error occurred while connecting to" 
-        #                      "SENAITE.\n Provide the correct host address")
+        #     show_message_box("Critical", "SENAITE Error", "Unexpected error occurred while connecting to"
+        #                                                   "SENAITE.\n Provide the correct host address")
 
         # print(json.dumps(analysis_services, indent=4))
-        return analysis_services
+        # return analysis_services
 
     except Exception as e:
         show_message_box("Critical", "Error", str(e))
+    else:
+        return analysis_services
 
 
 # transfer the analyzer results to update SENAITE
 def transfer_to_senaite(analyzer_result):
     transfer_count = 0
     transfer_err = 0
+    tcd = ''
+
+    _cookie_file = os.path.join(basedir, "..", "data", "cookie.ini")
+    _cookie_config = configparser.ConfigParser()
+    _cookie_config.read(cookie_file)
 
     # print(analyzer_result)
-
+    # show_message_box("Information", "ASTM", str(analyzer_result))
     # url of SENAITE to update analysis
     # senaite_url = f"http://10.5.50.44:8081/assinfoso-test/@@API/senaite/v1/update"
-    # senaite_url = f"http://localhost:8080/senaite/@@API/senaite/v1/update"
+    # senaite_url = f"http://10.10.23.17:8080/senaite/@@API/senaite/v1/update"
     # Specify the appropriate header for the POST request
     headers = {'Content-type': 'application/json'}
     api_url_senaite = senaite_api_url()
+    # api_url_senaite = senaite_url
 
     if len(analyzer_result) == 1:
 
         # print(analyzer_result[0])
         response = requests.post(f"{api_url_senaite}/update", headers=headers, json=analyzer_result[0],
-                                 cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]},
+                                 cookies={_cookie_config["Cookie"]["name"]: _cookie_config["Cookie"]["value"]},
                                  timeout=15)
 
         # Handling the response from the server
         if response.status_code == requests.codes.ok:
-            pass
+            # pass
             # print('Transfer was successful')
             # print(response.json())
+            return "SENAITE: Transfer of result was successful\n"
         else:
-            show_message_box("Information", "Transfer of Result",
-                             f"Transfer failed with status code: {response.status_code}.\n"
-                             f"The transfer result already exit or not registered in SENAITE LIMS!")
+            # show_message_box("Information", "Transfer of Result",
+            #                  f"Transfer failed with status code: {response.status_code}.\n"
+            #                  f"The transfer result already exit or not registered in SENAITE LIMS!")
             # print('Request failed with status code:', response.status_code)
+            return f"Transfer failed with status code:{tcd}. Either the transfer result already exist or not registered in SENAITE LIMS!\n"
 
     else:
-        tcd = ''
         for results in analyzer_result:
             # send the post request
-            # json_str = json.dumps(result)
+            # json_str = json.dumps(results)
+            # print(json_str)
             response = requests.post(f"{api_url_senaite}/update", headers=headers, json=results,
-                                     cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]},
+                                     cookies={_cookie_config["Cookie"]["name"]: _cookie_config["Cookie"]["value"]},
                                      timeout=15)
 
             # Handling the response from the server
@@ -264,21 +284,27 @@ def transfer_to_senaite(analyzer_result):
                 transfer_count += 1  # to count the successful transfer
                 # print('Transfer of result was successful')
                 # print(response.json())
+
             else:
                 transfer_err += 1
                 # print('Transfer failed with status code:', response.status_code)
                 tcd = response.status_code
 
-        if transfer_err > 0:
-            show_message_box("Information", "Transfer of Result", f"Transfer failed with status code:"
-                                                                  f"{tcd}.\nEither the transfer result already exist"
-                                                                  f" or not registered in SENAITE LIMS!")
+    if transfer_err > 0:
+        # show_message_box("Information", "Transfer of Result", f"Transfer failed with status code:"
+        #                                                       f"{tcd}.\nEither the transfer result already exist"
+        #                                                       f" or not registered in SENAITE LIMS!")
+        return f"Transfer failed with status code:{tcd}. Either the transfer result already exist or not registered in SENAITE LIMS!\n"
+
+    elif transfer_count > 1:
+        # print("SENAITE: Transfer of result was successful")
+        return "SENAITE: Transfer of result was successful\n"
 
 
 # Transfer failed with status code: 401
 
 if __name__ == '__main__':
-    # get_sample_path()
+    get_sample_path()
     # get_analysis_service()
-    data = get_analysis_service()
-    print(data)
+    # data = get_analysis_service()
+    # print(data)
