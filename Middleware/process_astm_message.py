@@ -126,7 +126,7 @@ def parse_astm_data(astm_data):
                             # result_dict.append(results.copy())
                             # print(date_performed)
 
-                case 'BectonDickinson':  # BD Bactec FX40
+                case 'Becton Dickinson':  # BD Bactec FX40
                     if record_type == 'O':
                         # results.update({"id" : fields[2].strip()})
                         cs_path = client_uid_path(fields[2].strip())
@@ -208,5 +208,5 @@ def astm_parser(textfile):
 
 
 if __name__ == '__main__':
-    astm_parser('../astm_messages.txt')
+    astm_parser("C:\\Users\\berchie\\Downloads\\bactecfx.txt")
     # astm_parser('../demo_xn350.text')
