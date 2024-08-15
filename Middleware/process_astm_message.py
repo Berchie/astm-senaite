@@ -110,13 +110,15 @@ def parse_astm_data(astm_data):
                             results.update({"path": path_key})
                             if fields[4] == "----":
                                 fbc_value = 0
+                            elif fields[4] == "W":
+                                fbc_value = fields[5]
                             else:
                                 fbc_value = fields[4]
                             results.update({"Result": float(fbc_value)})
                             results.update({"transition": "submit"})
                             result_dict.append(results.copy())
 
-                        if fields[1] == "1":
+                        if fields[1] == "2":
                             # print(fields[7])
                             results.clear()
                             # date_performed = yyyy-mm-dd hh:mm

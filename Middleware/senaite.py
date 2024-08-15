@@ -132,7 +132,7 @@ def senaite_api_url():
 
 def client_uid_path(sample_id):
     senaite_url = senaite_api_url()
-    # senaite_url = f"http://10.10.23.17:8080/senaite/@@API/senaite/v1"
+    # senaite_url = f"http://134.100.203.30:8080/senaite/@@API/senaite/v1"
     try:
         client_uid = ''
 
@@ -168,7 +168,7 @@ def get_sample_path():
     # ask the user for the senaite api url
     # base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
     base_url = senaite_api_url()
-    # base_url = f"http://10.10.23.17:8080/senaite/@@API/senaite/v1"
+    # base_url = f"http://134.100.203.30:8080/senaite/@@API/senaite/v1"
 
     try:
         resp = requests.get(f'{base_url}/AnalysisService/',
@@ -201,7 +201,7 @@ def get_analysis_service():
 
     # ask the user for the senaite api url
     # base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
-    af_url = "http://10.10.23.17:8080/senaite/@@API/senaite/v1"
+    # af_url = "http://134.100.203.30:8080/senaite/@@API/senaite/v1"
     lims_apu_url = senaite_api_url()
     # lims_apu_url = af_url
 
@@ -244,7 +244,7 @@ def transfer_to_senaite(analyzer_result):
     # show_message_box("Information", "ASTM", str(analyzer_result))
     # url of SENAITE to update analysis
     # senaite_url = f"http://10.5.50.44:8081/assinfoso-test/@@API/senaite/v1/update"
-    # senaite_url = f"http://10.10.23.17:8080/senaite/@@API/senaite/v1/update"
+    # senaite_url = f"http://134.100.203.30:8080/senaite/@@API/senaite/v1/update"
     # Specify the appropriate header for the POST request
     headers = {'Content-type': 'application/json'}
     api_url_senaite = senaite_api_url()
