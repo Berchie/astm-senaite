@@ -207,7 +207,7 @@ def get_analysis_service():
 
     try:
         resp = requests.get(f'{lims_apu_url}/AnalysisService/',
-                            params={'limit': '50', 'review_state': 'active', 'complete': 'true'},
+                            params={'limit': '80', 'review_state': 'active', 'complete': 'true'},
                             cookies={_cookie_config["Cookie"]["name"]: _cookie_config["Cookie"]["value"]}, timeout=15)
         data_as = resp.json()
         data_as = data_as["items"]
@@ -244,7 +244,7 @@ def transfer_to_senaite(analyzer_result):
     # show_message_box("Information", "ASTM", str(analyzer_result))
     # url of SENAITE to update analysis
     # senaite_url = f"http://10.5.50.44:8081/assinfoso-test/@@API/senaite/v1/update"
-    # senaite_url = f"http://134.100.203.30:8080/senaite/@@API/senaite/v1/update"
+    # senaite_url = f"http://localhost:8080/senaite/@@API/senaite/v1/update"
     # Specify the appropriate header for the POST request
     headers = {'Content-type': 'application/json'}
     api_url_senaite = senaite_api_url()
