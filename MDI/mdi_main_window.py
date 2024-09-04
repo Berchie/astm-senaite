@@ -60,7 +60,8 @@ class MainWindow(QMainWindow, Ui_MDI_MainWindow):
     def about(self):
         QMessageBox.about(self, "About ASTMtoSENAITE",
                           "The <b>ASTMtoSENAITE</b> is responsible for processing the ASTM message"
-                          " from the laboratory and transferring it to the SENAITE LIMS system.")
+                          " from the laboratory and transferring it to the SENAITE LIMS system.<br><br>"
+                          "<b>Version:</b> 0.1.3")
 
     def create_mdi_child(self):
         # Analyzer - ASTM Middleware

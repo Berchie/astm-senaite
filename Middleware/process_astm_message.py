@@ -110,13 +110,15 @@ def parse_astm_data(astm_data):
                             results.update({"path": path_key})
                             if fields[4] == "----":
                                 fbc_value = 0
+                            elif fields[4] == "W":
+                                fbc_value = fields[5]
                             else:
                                 fbc_value = fields[4]
                             results.update({"Result": float(fbc_value)})
                             results.update({"transition": "submit"})
                             result_dict.append(results.copy())
 
-                        if fields[1] == "1":
+                        if fields[1] == "2":
                             # print(fields[7])
                             results.clear()
                             # date_performed = yyyy-mm-dd hh:mm
@@ -161,7 +163,7 @@ def parse_astm_data(astm_data):
                             # print(fields[5])
                             results.clear()
                             # date_performed = yyyy-mm-dd hh:mm
-                            date_performed = f"{fields[5][0:12][0:4]}-{fields[5][0:12][4:6]}-{fields[5][0:12][6:8]} {fields[5][0:12][8:10]}:{fields[5][0:12][10:12]}"
+                            date_performed = f"{fields[6][0:12][0:4]}-{fields[6][0:12][4:6]}-{fields[6][0:12][6:8]} {fields[6][0:12][8:10]}:{fields[6][0:12][10:12]}"
                             # results.update({"path": analysis_test_path})
                             # results.update({"ClientOrderNumber": date_performed})  # getClientOrderNumber
                             # result_dict.append(results.copy())
@@ -209,4 +211,4 @@ def astm_parser(textfile):
 
 if __name__ == '__main__':
     astm_parser("C:\\Users\\berchie\\Downloads\\bactecfx.txt")
-    # astm_parser('../demo_xn350.text')
+    # astm_parser('../cobas_c111.txt')

@@ -6,7 +6,6 @@ from PySide6 import QtCore as qtc
 from PySide6 import QtWidgets as qtw
 from PySide6 import QtSerialPort as qts
 
-
 from Settings.UI.settings import Ui_dg_settings
 
 # filepath = os.path.join(os.path.join(os.path.dirname(__file__), "data", "settings.json"))
@@ -206,7 +205,7 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
             qtw.QMessageBox.critical(self, "Error", str(cerr))
         except Exception as e:
             qtw.QMessageBox.critical(self, "Error", str(e))
-    
+
     # using data files
     # finding them using the code below
     @staticmethod
@@ -244,7 +243,7 @@ class SettingsForm(qtw.QTabWidget, Ui_dg_settings):
                         # settings_values = tuple(settings_values)
 
             return settings_values
-    
+
     def upload_settings(self):
         if self.upl_analyzer_settings:
             uploaded_settings = self.read_json_settings(self.upl_analyzer_settings)
