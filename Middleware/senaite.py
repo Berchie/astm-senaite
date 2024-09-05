@@ -141,7 +141,7 @@ def client_uid_path(sample_id):
                             cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]}, timeout=15)
         analysis_path = resp.json()
         analysis_path = analysis_path['items']
-        show_message_box("Information", "Debug", f"{analysis_path[0]["path"]}")  # debug the ID does not exist error
+        show_message_box("Information", "Debug", f"{analysis_path}")  # debug the ID does not exist error
         if resp.status_code == 200 and analysis_path:
             client_uid = analysis_path[0]['path']
         else:
