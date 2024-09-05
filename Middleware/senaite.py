@@ -132,7 +132,7 @@ def senaite_api_url():
 
 def client_uid_path(sample_id):
     senaite_url = senaite_api_url()
-    # senaite_url = f"http://134.100.203.30:8080/senaite/@@API/senaite/v1"
+    #senaite_url = f"http://172.20.0.1:8081/assinfoso-test/@@API/senaite/v1"
     try:
         client_uid = ''
 
@@ -141,6 +141,7 @@ def client_uid_path(sample_id):
                             cookies={cookie_config["Cookie"]["name"]: cookie_config["Cookie"]["value"]}, timeout=15)
         analysis_path = resp.json()
         analysis_path = analysis_path['items']
+        show_message_box("Information", "Debug", f"{analysis_path[0]["path"]}")  # debug the ID does not exist error
         if resp.status_code == 200 and analysis_path:
             client_uid = analysis_path[0]['path']
         else:
@@ -201,7 +202,7 @@ def get_analysis_service():
 
     # ask the user for the senaite api url
     # base_url = f"http://localhost:8080/senaite{API_BASE_URL}"
-    # af_url = "http://134.100.203.30:8080/senaite/@@API/senaite/v1"
+    # af_url = "http://172.20.0.1:8081/assinfoso-test/@@API/senaite/v1"
     lims_apu_url = senaite_api_url()
     # lims_apu_url = af_url
 
@@ -243,7 +244,7 @@ def transfer_to_senaite(analyzer_result):
     # print(analyzer_result)
     # show_message_box("Information", "ASTM", str(analyzer_result))
     # url of SENAITE to update analysis
-    # senaite_url = f"http://10.5.50.44:8081/assinfoso-test/@@API/senaite/v1/update"
+    # senaite_url = f"http://172.20.0.1:8081/assinfoso-test/@@API/senaite/v1/update"
     # senaite_url = f"http://localhost:8080/senaite/@@API/senaite/v1/update"
     # Specify the appropriate header for the POST request
     headers = {'Content-type': 'application/json'}

@@ -163,7 +163,10 @@ def parse_astm_data(astm_data):
                             # print(fields[5])
                             results.clear()
                             # date_performed = yyyy-mm-dd hh:mm
-                            date_performed = f"{fields[6][0:12][0:4]}-{fields[6][0:12][4:6]}-{fields[6][0:12][6:8]} {fields[6][0:12][8:10]}:{fields[6][0:12][10:12]}"
+                            if fields[6] != "F" or fields[5]== "N":
+                                date_performed = f"{fields[6][0:12][0:4]}-{fields[6][0:12][4:6]}-{fields[6][0:12][6:8]} {fields[6][0:12][8:10]}:{fields[6][0:12][10:12]}"
+                            else:
+                                date_performed = f"{fields[5][0:12][0:4]}-{fields[5][0:12][4:6]}-{fields[5][0:12][6:8]} {fields[5][0:12][8:10]}:{fields[5][0:12][10:12]}"
                             # results.update({"path": analysis_test_path})
                             # results.update({"ClientOrderNumber": date_performed})  # getClientOrderNumber
                             # result_dict.append(results.copy())
